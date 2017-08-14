@@ -5,7 +5,7 @@
   "description": "2017 js13k entry",
   "scripts": {
     "start": "webpack-dev-server --progress --colors",
-    "prebuild": "npm run clean && npm run lint",
+    "prebuild": "npm run clean",
     "build": "webpack -p --progress --colors",
     "postbuild": "npm run test",
     "test": "jest",
