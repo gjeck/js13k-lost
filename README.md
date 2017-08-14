@@ -15,3 +15,6 @@ build production assets
 ```
 npm run build
 ```
+
+### Resources + Inspiration
+- [extreme-mini-massacre](https://github.com/js13kGames/Extreme-Mini-Massacre)
