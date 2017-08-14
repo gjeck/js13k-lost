@@ -1,2 +1,17 @@
 # js13k-lost
-2017 http://js13kgames.com/
+
+### Getting started
+install dependencies
+```
+npm install
+```
+
+run local development server
+```
+npm start
+```
+
+build production assets
+```
+npm run build
+```
