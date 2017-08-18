@@ -1,0 +1,66 @@
+export default function GameInputController(spec) {
+  const s = spec || {}
+  const graphics = s.graphics
+  const docWindow = s.docWindow || window
+  let keyboard = {}
+  let mouse = {}
+
+  const setMousePoint = (x, y) => {
+    mouse.x = x - graphics.canvas.offsetLeft
+    mouse.y = y - graphics.canvas.offsetTop
+    mouse.x *= graphics.ratio.x
+    mouse.y *= graphics.ratio.y
+  }
+
+  const isUp = () => {
+    return keyboard[KeyMapping.up] || false
+  }
+
+  const isLeft = () => {
+    return keyboard[KeyMapping.left] || false
+  }
+
+  const isRight = () => {
+    return keyboard[KeyMapping.right] || false
+  }
+
+  const isDown = () => {
+    return keyboard[KeyMapping.down] || false
+  }
+
+  docWindow.addEventListener('keyup', (e) => {
+    keyboard[e.code] = false
+  })
+
+  docWindow.addEventListener('keydown', (e) => {
+    keyboard[e.code] = true
+  })
+
+  graphics.canvas.addEventListener('mousemove', (e) => {
+    setMousePoint(e.clientX, e.clientY)
+  })
+
+  graphics.canvas.addEventListener('mousedown', (e) => {
+    setMousePoint(e.clientX, e.clientY)
+    mouse.down = true
+  })
+
+  graphics.canvas.addEventListener('mouseup', (e) => {
+    setMousePoint(e.clientX, e.clientY)
+    mouse.down = false
+  })
+
+  return {
+    isUp: isUp,
+    isLeft: isLeft,
+    isDown: isDown,
+    isRight: isRight
+  }
+}
+
+const KeyMapping = Object.freeze({
+  up: 'KeyW',
+  left: 'KeyA',
+  down: 'KeyS',
+  right: 'KeyD'
+})

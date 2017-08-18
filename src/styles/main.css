@@ -4,3 +4,10 @@ html, body {
   margin: 0;
   padding: 0;
 }
+
+canvas {
+  outline: none;
+  margin: 0 auto;
+  display: block;
+  max-height: 100vh;
+}
