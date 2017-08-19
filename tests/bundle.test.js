@@ -1,5 +1,5 @@
-const fs = require('fs')
-const archiver = require('archiver')
+import fs from 'fs'
+import archiver from 'archiver'
 
 function archive() {
   return new Promise((resolve, reject) => {
@@ -29,10 +29,12 @@ function archive() {
   })
 }
 
-test('the project is under 13kb', () => {
-  expect.assertions(1)
-  return archive().then(data => {
-    expect(data.size).toBeLessThanOrEqual(13312)
-    console.log('Project is utilizing:\n \x1b[33m%s\x1b[0m', data.size + '/13312 bytes')
+describe('the project', () => {
+  test('is under 13kb', () => {
+    expect.assertions(1)
+    return archive().then(data => {
+      expect(data.size).toBeLessThanOrEqual(13312)
+      console.log('Project is utilizing:\n \x1b[33m%s\x1b[0m', data.size + '/13312 bytes')
+    })
   })
 })

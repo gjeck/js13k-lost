@@ -22,10 +22,10 @@ export default function BoundingRect(spec) {
   }
 
   const intersects = (other) => {
-    return x < other.x + other.width &&
-        x + width > other.x &&
-        y < other.y + other.height &&
-        height + y > other.y
+    return x < other.maxX() &&
+        maxX() > other.x &&
+        y < other.maxY() &&
+        maxY() > other.y
   }
 
   return {
