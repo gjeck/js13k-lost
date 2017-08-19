@@ -1,6 +1,7 @@
 export default function GameInputController(spec) {
   const s = spec || {}
   const graphics = s.graphics
+  const emitter = s.emitter
   const docWindow = s.docWindow || window
   let keyboard = {}
   let mouse = {}
@@ -43,6 +44,7 @@ export default function GameInputController(spec) {
   graphics.canvas.addEventListener('mousedown', (e) => {
     setMousePoint(e.clientX, e.clientY)
     mouse.down = true
+    emitter.emit('GameInputController:mousedown', e)
   })
 
   graphics.canvas.addEventListener('mouseup', (e) => {

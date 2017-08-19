@@ -5,9 +5,49 @@ html, body {
   padding: 0;
 }
 
+body {
+  background-color: gray;
+}
+
 canvas {
   outline: none;
   margin: 0 auto;
   display: block;
   max-height: 100vh;
+  background-color: white;
+}
+
+.shake {
+  animation-duration: 0.8s;
+  animation-name: twiddle;
+}
+
+@keyframes zoomInOut {
+  from {
+    transform: scale(1)
+  }
+  to {
+    transform: scale(3)
+  }
+}
+
+@keyframes twiddle {
+  19% {
+    transform: scale(1.4) translate3d(-3px, 1px, 0);
+  }
+  90% {
+    transform: translate3d(-1px, -1px, 0);
+  }
+
+  20%, 80% {
+    transform: translate3d(2px, -3px, 0);
+  }
+
+  30%, 50%, 70% {
+    transform: translate3d(-4px, 2px, 0);
+  }
+
+  40%, 60% {
+    transform: translate3d(4px, -1px, 0);
+  }
 }

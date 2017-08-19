@@ -21,9 +21,24 @@ export default function Graphics(spec) {
 
   const drawCircle = (x, y, radius) => {
     ctx.beginPath()
-    ctx.arc(x, y, radius, 0, Math.PI * 2)
+    ctx.arc(x + radius, y + radius, radius, 0, Math.PI * 2)
     ctx.fill()
     ctx.closePath()
+  }
+
+  const drawRect = (x, y, width, height) => {
+    ctx.beginPath()
+    ctx.fillRect(x, y, width, height)
+    ctx.closePath()
+  }
+
+  const reset = () => {
+    ctx.setTransform(1, 0, 0, 1, 0, 0)
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+  }
+
+  const smooth = (enabled) => {
+    ctx['imageSmoothingEnabled'] = enabled
   }
 
   canvas.addEventListener('click', function() {
@@ -43,6 +58,9 @@ export default function Graphics(spec) {
     ctx: ctx,
     resize: resize,
     ratio: ratio,
-    drawCircle: drawCircle
+    drawCircle: drawCircle,
+    drawRect: drawRect,
+    reset: reset,
+    smooth: smooth
   }
 }

@@ -2,8 +2,8 @@ import RunLoop from './run_loop'
 import EventEmitter from 'events'
 import Graphics from './graphics'
 import GameInputController from './game_input_controller'
-import BoundingRect from './bounding_rect'
 import Hero from './hero'
+import Camera from './camera'
 
 const DevStats = (spec) => {
   const s = spec || {}
@@ -27,84 +27,72 @@ const DevStats = (spec) => {
   }
 }
 
-const map = {
-  cols: 16,
-  rows: 16,
-  tileSize: 128,
-  layers: [[
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-  ], [
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-  ]],
-  getTile: function(layer, col, row) {
-    return this.layers[layer][row * map.cols + col]
-  }
-}
-
-function Camera(spec) {
+function Map(spec) {
   const s = spec || {}
   const graphics = s.graphics
-  const frame = BoundingRect(s)
-  frame.maxX = map.cols * map.tileSize - frame.width
-  frame.maxY = map.rows * map.tileSize - frame.height
-  let isFollowing = false
-  let followRect
+  const cols = s.cols || 16
+  const rows = s.rows || 16
+  const tileSize = s.tileSize || 128
+  let layers = [[
+    0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+    0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
+    0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1
+  ], [
+    0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+  ]]
 
-  const follow = (rect) => {
-    isFollowing = true
-    followRect = rect
+  const getTile = (layer, col, row) => {
+    return layers[layer][row * cols + col]
   }
 
-  const unFollow = () => {
-    isFollowing = false
-    followRect = null
-  }
-
-  const render = () => {
-    if (isFollowing) {
-      // Clamp the camera position to the world bounds while centering the camera around the follow
-      let camX = Math.clamp(-followRect.frame.x + graphics.canvas.width / 2, 0, frame.maxX - graphics.canvas.width)
-      let camY = Math.clamp(-followRect.frame.y + graphics.canvas.height / 2, 0, frame.maxY - graphics.canvas.height)
-
-      graphics.ctx.translate(camX, camY)
-    }
+  const render = (layer) => {
+    layers[layer].forEach((element, index) => {
+      let row = index % rows
+      let col = Math.floor(index / cols)
+      switch (element) {
+        case 1:
+          graphics.drawRect(tileSize * row, tileSize * col, tileSize, tileSize)
+          break
+        case 2:
+          graphics.drawCircle(tileSize * row, tileSize * col, tileSize / 2)
+      }
+    })
   }
 
   return {
-    isFollowing: isFollowing,
-    follow: follow,
-    unFollow: unFollow,
-    frame: frame,
+    cols: cols,
+    rows: rows,
+    tileSize: tileSize,
+    layers: layers,
+    getTile: getTile,
     render: render
   }
 }
@@ -112,40 +100,48 @@ function Camera(spec) {
 document.addEventListener('DOMContentLoaded', function() {
   const canvas = document.getElementById('canvas')
   const graphics = Graphics({ canvas: canvas })
+  graphics.smooth(false)
   const emitter = new EventEmitter()
   const runLoop = RunLoop({ emitter: emitter })
   const devStats = DevStats({ elem: document.getElementById('devStats') })
+  const map = Map({ graphics: graphics })
   const camera = Camera({
     graphics: graphics,
-    map: map,
-    width: canvas.width,
-    height: canvas.height
+    maxX: map.cols * map.tileSize,
+    maxY: map.rows * map.tileSize
   })
   const gameInputController = GameInputController({
-    graphics: graphics
+    graphics: graphics,
+    emitter: emitter
   })
   const hero = Hero({
     graphics: graphics,
     gameInputController: gameInputController
   })
-  camera.follow(hero)
 
-  emitter.on('runLoop:begin', (timeStamp, frameDelta) => {
+  emitter.on('RunLoop:begin', (timeStamp, frameDelta) => {
   })
 
-  emitter.on('runLoop:update', (delta) => {
+  emitter.on('RunLoop:update', (delta) => {
     hero.update(delta)
   })
 
-  emitter.on('runLoop:render', (interpolationPercentage) => {
-    graphics.ctx.setTransform(1, 0, 0, 1, 0, 0)
-    graphics.ctx.clearRect(0, 0, canvas.width, canvas.height)
-    camera.render()
+  emitter.on('RunLoop:render', (interpolationPercentage) => {
+    graphics.reset()
+    camera.begin()
+    camera.follow(hero.frame)
+    map.render(0)
     hero.render()
+    map.render(1)
+    camera.end()
   })
 
-  emitter.on('runLoop:end', (fps, panic) => {
+  emitter.on('RunLoop:end', (fps, panic) => {
     devStats.render(fps, panic)
+  })
+
+  emitter.on('GameInputController:mousedown', (e) => {
+
   })
 
   runLoop.start()
