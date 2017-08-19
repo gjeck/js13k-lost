@@ -4,6 +4,7 @@ import Graphics from './graphics'
 import GameInputController from './game_input_controller'
 import Hero from './hero'
 import Camera from './camera'
+import Map from './map'
 
 const DevStats = (spec) => {
   const s = spec || {}
@@ -24,84 +25,6 @@ const DevStats = (spec) => {
   return {
     render: render,
     setIsEnabled: setIsEnabled
-  }
-}
-
-function Map(spec) {
-  const s = spec || {}
-  const graphics = s.graphics
-  const cols = s.cols || 16
-  const rows = s.rows || 16
-  const tileSize = s.tileSize || 128
-  let layers = [[
-    0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
-    0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
-    0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1
-  ], [
-    0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-  ]]
-
-  const getTile = (layer, col, row) => {
-    return layers[layer][row * cols + col]
-  }
-
-  const render = (layer, viewport) => {
-    let minRow = Math.floor(viewport.left / tileSize)
-    let maxRow = Math.floor(viewport.right / tileSize)
-    let minCol = Math.floor(viewport.top / tileSize)
-    let maxCol = Math.floor(viewport.bottom / tileSize)
-
-    layers[layer].forEach((element, index) => {
-      let row = index % rows
-      let col = Math.floor(index / cols)
-      if (row < minRow || row > maxRow || col < minCol || col > maxCol) {
-        return
-      }
-      switch (element) {
-        case 1:
-          graphics.drawRect(tileSize * row, tileSize * col, tileSize, tileSize)
-          break
-        case 2:
-          graphics.drawCircle(tileSize * row, tileSize * col, tileSize / 2)
-      }
-    })
-  }
-
-  return {
-    cols: cols,
-    rows: rows,
-    tileSize: tileSize,
-    layers: layers,
-    getTile: getTile,
-    render: render
   }
 }
 
@@ -149,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
   })
 
   emitter.on('GameInputController:mousedown', (e) => {
-    console.log(camera.viewport)
+    canvas.classList.toggle('shake')
   })
 
   runLoop.start()
