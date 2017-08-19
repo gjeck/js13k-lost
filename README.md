@@ -18,7 +18,7 @@ npm run build
 
 run tests
 ```
-npm run tests
+npm test
 ```
 
 ### Resources + Inspiration
