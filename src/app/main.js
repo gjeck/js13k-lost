@@ -73,10 +73,18 @@ function Map(spec) {
     return layers[layer][row * cols + col]
   }
 
-  const render = (layer) => {
+  const render = (layer, viewport) => {
+    let minRow = Math.floor(viewport.left / tileSize)
+    let maxRow = Math.floor(viewport.right / tileSize)
+    let minCol = Math.floor(viewport.top / tileSize)
+    let maxCol = Math.floor(viewport.bottom / tileSize)
+
     layers[layer].forEach((element, index) => {
       let row = index % rows
       let col = Math.floor(index / cols)
+      if (row < minRow || row > maxRow || col < minCol || col > maxCol) {
+        return
+      }
       switch (element) {
         case 1:
           graphics.drawRect(tileSize * row, tileSize * col, tileSize, tileSize)
@@ -130,9 +138,9 @@ document.addEventListener('DOMContentLoaded', function() {
     graphics.reset()
     camera.begin()
     camera.follow(hero.frame)
-    map.render(0)
+    map.render(0, camera.viewport)
     hero.render()
-    map.render(1)
+    map.render(1, camera.viewport)
     camera.end()
   })
 
@@ -141,7 +149,7 @@ document.addEventListener('DOMContentLoaded', function() {
   })
 
   emitter.on('GameInputController:mousedown', (e) => {
-
+    console.log(camera.viewport)
   })
 
   runLoop.start()
