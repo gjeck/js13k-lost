@@ -22,10 +22,24 @@ export default function BoundingRect(spec) {
   }
 
   const intersects = (other) => {
-    return x < other.maxX() &&
-        maxX() > other.x &&
-        y < other.maxY() &&
-        maxY() > other.y
+    return x <= other.maxX() &&
+      maxX() >= other.x &&
+      y <= other.maxY() &&
+      maxY() >= other.y
+  }
+
+  const contains = (other) => {
+    return other.maxX() <= maxX() &&
+      other.x >= x &&
+      other.maxY() <= maxY() &&
+      other.y >= y
+  }
+
+  const containsPoint = (pX, pY) => {
+    return x <= pX &&
+      maxX() >= pX &&
+      y <= pY &&
+      maxY() >= pY
   }
 
   return {
@@ -37,6 +51,8 @@ export default function BoundingRect(spec) {
     centerY: centerY,
     maxX: maxX,
     maxY: maxY,
-    intersects: intersects
+    intersects: intersects,
+    contains: contains,
+    containsPoint: containsPoint
   }
 }
