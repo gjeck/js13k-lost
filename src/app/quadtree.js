@@ -2,7 +2,7 @@ import BoundingRect from './bounding_rect'
 
 export default function QuadTree(spec) {
   const s = spec || {}
-  const maxItems = s.maxItems || 20
+  const maxItems = s.maxItems || 40
   const depth = s.depth || 0
   const bounds = BoundingRect(spec)
   let items = []
@@ -69,10 +69,15 @@ export default function QuadTree(spec) {
       subDivide()
     }
 
-    for (let i = 0; i < nodes.length; ++i) {
-      if (nodes[i].insert(item)) {
-        return true
+    let addedToChild = false
+    nodes.forEach((node) => {
+      if (node.insert(item)) {
+        addedToChild = true
       }
+    })
+
+    if (addedToChild) {
+      return true
     }
 
     // item is orphaned, and couldn't be added normally
@@ -83,20 +88,20 @@ export default function QuadTree(spec) {
   const query = (boundingRect) => {
     let results = []
 
-    for (let i = 0; i < nodes.length; ++i) {
-      if (nodes[i].bounds.intersects(boundingRect)) {
-        let childResults = nodes[i].query(boundingRect)
+    nodes.forEach((node) => {
+      if (node.bounds.intersects(boundingRect)) {
+        let childResults = node.query(boundingRect)
         if (childResults.length) {
-          results.push(childResults)
+          results.concat(childResults)
         }
       }
-    }
+    })
 
-    for (let i = 0; i < items.length; ++i) {
-      if (items[i].frame.intersects(boundingRect)) {
-        results.push(items[i])
+    items.forEach((item) => {
+      if (item.frame.intersects(boundingRect)) {
+        results.push(item)
       }
-    }
+    })
 
     return results
   }
@@ -106,6 +111,8 @@ export default function QuadTree(spec) {
     bounds: bounds,
     removeAll: removeAll,
     insert: insert,
-    query: query
+    query: query,
+    items: items,
+    nodes: nodes
   }
 }

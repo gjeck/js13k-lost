@@ -7,6 +7,7 @@ import Camera from './camera'
 import Map from './map'
 import DevStats from './dev_stats'
 import MazeGenerator from './maze'
+import Quadtree from './quadtree'
 
 document.addEventListener('DOMContentLoaded', function() {
   const canvas = document.getElementById('canvas')
@@ -34,11 +35,26 @@ document.addEventListener('DOMContentLoaded', function() {
     gameInputController: gameInputController
   })
 
+  let treePadding = 25
+  const quadtree = Quadtree({
+    x: -treePadding,
+    y: -treePadding,
+    width: map.cols * map.tileSize + treePadding,
+    height: map.rows * map.tileSize + treePadding
+  })
+
+  const tiles = map.getAllTiles()
+
   emitter.on('RunLoop:begin', (timeStamp, frameDelta) => {
+    quadtree.insert(hero)
+    tiles.forEach((tile) => { quadtree.insert(tile) })
   })
 
   emitter.on('RunLoop:update', (delta) => {
     hero.update(delta)
+
+    let items = quadtree.query(hero.frame)
+    console.log(items)
   })
 
   emitter.on('RunLoop:render', (interpolationPercentage) => {
@@ -46,12 +62,15 @@ document.addEventListener('DOMContentLoaded', function() {
     camera.begin()
     camera.follow(hero.frame)
     map.render(camera.viewport)
+    console.log(hero.frame)
     hero.render()
     camera.end()
   })
 
   emitter.on('RunLoop:end', (fps, panic) => {
     devStats.render(fps, panic)
+
+    quadtree.removeAll()
   })
 
   emitter.on('GameInputController:mousedown', (e) => {

@@ -9,16 +9,17 @@ export default function Map(spec) {
   const rows = maze.length
   const tileSize = s.tileSize || 200
 
-  const getAllTileRects = () => {
+  const getAllTiles = () => {
     let rects = []
     for (let row = 0; row < rows; ++row) {
       for (let col = 0; col < cols; ++col) {
         let tileRects = getTileRects(row, col)
         tileRects.forEach((rect) => {
-          rects.push(BoundingRect(rect))
+          rects.push(Tile(rect))
         })
       }
     }
+    return rects
   }
 
   const render = (viewport) => {
@@ -92,6 +93,15 @@ export default function Map(spec) {
     rows: rows,
     tileSize: tileSize,
     render: render,
-    getAllTileRects: getAllTileRects
+    getAllTiles: getAllTiles
+  }
+}
+
+function Tile(spec) {
+  const s = spec || {}
+  let frame = BoundingRect(s)
+
+  return {
+    frame: frame
   }
 }
