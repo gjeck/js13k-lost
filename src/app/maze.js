@@ -1,7 +1,9 @@
 import { shuffle } from './utils'
 
 export default function MazeGenerator() {
-  const generate = (rows, cols) => {
+  const generate = (rows, cols, px, py) => {
+    let x = px || 0
+    let y = py || 0
     let grid = []
     for (let i = 0; i < rows; ++i) {
       let cells = []
@@ -10,13 +12,12 @@ export default function MazeGenerator() {
       }
       grid.push(cells)
     }
-    carve(0, 0, grid)
+    carve(x, y, grid)
     return grid
   }
 
   const carve = (cx, cy, grid) => {
     const directions = shuffle(Direction.dirs)
-
     directions.forEach((direction) => {
       const nx = cx + Direction.dx[direction]
       const ny = cy + Direction.dy[direction]
@@ -70,3 +71,5 @@ const Direction = Object.freeze({
   dy: { e: 0, w: 0, n: -1, s: 1 },
   opposite: { e: 8, w: 4, n: 2, s: 1 }
 })
+
+export { Direction }

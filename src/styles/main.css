@@ -13,7 +13,6 @@ canvas {
   outline: none;
   margin: 0 auto;
   display: block;
-  max-height: 100vh;
   background-color: white;
 }
 

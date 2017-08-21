@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const mazeGenerator = MazeGenerator()
   const map = Map({
     graphics: graphics,
-    mazeGenerator: mazeGenerator
+    maze: mazeGenerator.generate(16, 16)
   })
   const camera = Camera({
     graphics: graphics,
@@ -45,9 +45,8 @@ document.addEventListener('DOMContentLoaded', function() {
     graphics.reset()
     camera.begin()
     camera.follow(hero.frame)
-    map.render(0, camera.viewport)
+    map.render(camera.viewport)
     hero.render()
-    map.render(1, camera.viewport)
     camera.end()
   })
 
