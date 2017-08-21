@@ -6,6 +6,7 @@ import Hero from './hero'
 import Camera from './camera'
 import Map from './map'
 import DevStats from './dev_stats'
+import MazeGenerator from './maze'
 
 document.addEventListener('DOMContentLoaded', function() {
   const canvas = document.getElementById('canvas')
@@ -14,7 +15,11 @@ document.addEventListener('DOMContentLoaded', function() {
   const emitter = new EventEmitter()
   const runLoop = RunLoop({ emitter: emitter })
   const devStats = DevStats({ elem: document.getElementById('devStats') })
-  const map = Map({ graphics: graphics })
+  const mazeGenerator = MazeGenerator()
+  const map = Map({
+    graphics: graphics,
+    mazeGenerator: mazeGenerator
+  })
   const camera = Camera({
     graphics: graphics,
     maxX: map.cols * map.tileSize,
