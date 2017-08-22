@@ -7,7 +7,7 @@ export default function Hero(spec) {
   const graphics = s.graphics
   const inputController = s.gameInputController
   let frame = BoundingRect(spec)
-  let speed = s.speed || 0.3
+  let speed = s.speed || 0.32
 
   const update = (delta) => {
     if (inputController.isUp()) {

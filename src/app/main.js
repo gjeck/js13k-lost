@@ -8,6 +8,7 @@ import Map from './map'
 import DevStats from './dev_stats'
 import MazeGenerator from './maze'
 import Quadtree from './quadtree'
+import { randomIntInRange } from './utils'
 
 document.addEventListener('DOMContentLoaded', function() {
   const canvas = document.getElementById('canvas')
@@ -19,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const mazeGenerator = MazeGenerator()
   const map = Map({
     graphics: graphics,
-    maze: mazeGenerator.generate(16, 16)
+    maze: mazeGenerator.generate(16, 16, randomIntInRange(16), randomIntInRange(16))
   })
   const camera = Camera({
     graphics: graphics,

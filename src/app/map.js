@@ -1,5 +1,6 @@
 import { Direction } from './maze'
 import BoundingRect from './bounding_rect'
+import { randomIntInRange } from './utils'
 
 export default function Map(spec) {
   const s = spec || {}
@@ -8,6 +9,9 @@ export default function Map(spec) {
   const cols = maze[0].length
   const rows = maze.length
   const tileSize = s.tileSize || 200
+  const exit = s.exit || {row: randomIntInRange(0, rows), col: cols - 1}
+
+  maze[exit.row][exit.col] = 0
 
   const getAllTiles = () => {
     let rects = []
@@ -43,6 +47,9 @@ export default function Map(spec) {
     let halfEdge = edgeDimension / 2
     let rects = []
 
+    if (tileNum === 0) {
+      return rects
+    }
     if ((tileNum & Direction.n) === 0) {
       rects.push({
         x: x,

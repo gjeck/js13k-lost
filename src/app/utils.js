@@ -12,7 +12,7 @@ const clamp = (value, min, max) => {
 }
 
 /**
-  Shuffles an array
+  Shuffles an array.
 
   @param {Array} array the input to shuffle
   @returns the array with its contents shuffled
@@ -30,7 +30,22 @@ const shuffle = (array) => {
   return array
 }
 
+/**
+  Get a random integer between two values
+
+  @param {Number} min inclusive minimum
+  @param {Number} max exclusive maximum
+  @returns An integer between min and max
+  @type Number
+*/
+const randomIntInRange = (min, max) => {
+  min = Math.ceil(min)
+  max = Math.floor(max)
+  return Math.floor(Math.random() * (max - min)) + min
+}
+
 export {
   clamp,
-  shuffle
+  shuffle,
+  randomIntInRange
 }
