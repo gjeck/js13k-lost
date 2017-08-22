@@ -2,8 +2,8 @@ import BoundingRect from './bounding_rect'
 
 export default function Hero(spec) {
   const s = spec || {}
-  s.width = s.width || 20
-  s.height = s.height || 20
+  s.width = s.width || 25
+  s.height = s.height || 25
   const graphics = s.graphics
   const inputController = s.gameInputController
   let frame = BoundingRect(spec)
@@ -23,7 +23,7 @@ export default function Hero(spec) {
   }
 
   const render = () => {
-    graphics.drawCircle(frame.x, frame.y, frame.width)
+    graphics.drawCircle(frame.x, frame.y, frame.width / 2)
   }
 
   return {

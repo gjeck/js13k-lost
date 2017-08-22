@@ -32,6 +32,8 @@ document.addEventListener('DOMContentLoaded', function() {
   })
   const hero = Hero({
     graphics: graphics,
+    x: 20,
+    y: 20,
     gameInputController: gameInputController
   })
 
@@ -54,6 +56,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
     quadtree.insert(hero)
     tiles.forEach((tile) => { quadtree.insert(tile) })
+
+    let results = quadtree.query(hero.frame)
+    results.forEach((result) => {
+      if (result === hero) {
+        return
+      }
+      let bottomCollision = hero.frame.maxY() - result.frame.y
+      let topCollision = result.frame.maxY() - hero.frame.y
+      let leftCollision = result.frame.maxX() - hero.frame.x
+      let rightCollision = hero.frame.maxX() - result.frame.x
+      if (topCollision < bottomCollision && topCollision < leftCollision && topCollision < rightCollision) {
+        hero.frame.y = result.frame.maxY()
+      } else if (bottomCollision < topCollision && bottomCollision < leftCollision && bottomCollision < rightCollision) {
+        hero.frame.y = result.frame.y - hero.frame.maxY() + hero.frame.y
+      } else if (leftCollision < rightCollision && leftCollision < topCollision && leftCollision < bottomCollision) {
+        hero.frame.x = result.frame.maxX()
+      } else if (rightCollision < leftCollision && rightCollision < topCollision && rightCollision < bottomCollision) {
+        hero.frame.x = result.frame.x - hero.frame.maxX() + hero.frame.x
+      }
+    })
   })
 
   emitter.on('RunLoop:render', (interpolationPercentage) => {
