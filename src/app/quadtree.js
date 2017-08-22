@@ -2,7 +2,7 @@ import BoundingRect from './bounding_rect'
 
 export default function QuadTree(spec) {
   const s = spec || {}
-  const maxItems = s.maxItems || 40
+  const maxItems = s.maxItems || 30
   const depth = s.depth || 0
   const bounds = BoundingRect(spec)
   let items = []
@@ -13,6 +13,16 @@ export default function QuadTree(spec) {
     nodes.forEach((node) => {
       node.removeAll()
     })
+    nodes.splice(0, nodes.length)
+  }
+
+  const countAll = () => {
+    let count = 0
+    count += items.length
+    nodes.forEach((node) => {
+      count += node.countAll()
+    })
+    return count
   }
 
   const subDivide = () => {
@@ -71,7 +81,7 @@ export default function QuadTree(spec) {
 
     let addedToChild = false
     nodes.forEach((node) => {
-      if (node.insert(item)) {
+      if (!addedToChild && node.insert(item)) {
         addedToChild = true
       }
     })
@@ -88,18 +98,22 @@ export default function QuadTree(spec) {
   const query = (boundingRect) => {
     let results = []
 
-    nodes.forEach((node) => {
-      if (node.bounds.intersects(boundingRect)) {
-        let childResults = node.query(boundingRect)
-        if (childResults.length) {
-          results.concat(childResults)
-        }
-      }
-    })
+    if (!bounds.contains(boundingRect)) {
+      return results
+    }
 
     items.forEach((item) => {
       if (item.frame.intersects(boundingRect)) {
         results.push(item)
+      }
+    })
+
+    nodes.forEach((node) => {
+      if (node.bounds.intersects(boundingRect)) {
+        let childResults = node.query(boundingRect)
+        childResults.forEach((child) => {
+          results.push(child)
+        })
       }
     })
 
@@ -113,6 +127,7 @@ export default function QuadTree(spec) {
     insert: insert,
     query: query,
     items: items,
-    nodes: nodes
+    nodes: nodes,
+    countAll: countAll
   }
 }

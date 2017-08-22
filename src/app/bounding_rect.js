@@ -5,41 +5,41 @@ export default function BoundingRect(spec) {
   let width = s.width || 0
   let height = s.height || 0
 
-  const centerX = () => {
-    return x + width / 2
+  const centerX = function() {
+    return this.x + this.width / 2
   }
 
-  const centerY = () => {
-    return y + height / 2
+  const centerY = function() {
+    return this.y + this.height / 2
   }
 
-  const maxX = () => {
-    return x + width
+  const maxX = function() {
+    return this.x + this.width
   }
 
-  const maxY = () => {
-    return y + height
+  const maxY = function() {
+    return this.y + this.height
   }
 
-  const intersects = (other) => {
-    return x <= other.maxX() &&
-      maxX() >= other.x &&
-      y <= other.maxY() &&
-      maxY() >= other.y
+  const intersects = function(other) {
+    return this.x <= other.maxX() &&
+      this.maxX() >= other.x &&
+      this.y <= other.maxY() &&
+      this.maxY() >= other.y
   }
 
-  const contains = (other) => {
-    return other.maxX() <= maxX() &&
-      other.x >= x &&
-      other.maxY() <= maxY() &&
-      other.y >= y
+  const contains = function(other) {
+    return other.maxX() <= this.maxX() &&
+      other.x >= this.x &&
+      other.maxY() <= this.maxY() &&
+      other.y >= this.y
   }
 
-  const containsPoint = (pX, pY) => {
-    return x <= pX &&
-      maxX() >= pX &&
-      y <= pY &&
-      maxY() >= pY
+  const containsPoint = function(pX, pY) {
+    return this.x <= pX &&
+      this.maxX() >= pX &&
+      this.y <= pY &&
+      this.maxY() >= pY
   }
 
   return {

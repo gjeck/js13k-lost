@@ -35,26 +35,25 @@ document.addEventListener('DOMContentLoaded', function() {
     gameInputController: gameInputController
   })
 
-  let treePadding = 25
+  let treePadding = map.tileSize
   const quadtree = Quadtree({
     x: -treePadding,
     y: -treePadding,
-    width: map.cols * map.tileSize + treePadding,
-    height: map.rows * map.tileSize + treePadding
+    width: map.cols * map.tileSize + treePadding * 2,
+    height: map.rows * map.tileSize + treePadding * 2
   })
 
   const tiles = map.getAllTiles()
 
   emitter.on('RunLoop:begin', (timeStamp, frameDelta) => {
-    quadtree.insert(hero)
-    tiles.forEach((tile) => { quadtree.insert(tile) })
+    devStats.tick()
   })
 
   emitter.on('RunLoop:update', (delta) => {
     hero.update(delta)
 
-    let items = quadtree.query(hero.frame)
-    console.log(items)
+    quadtree.insert(hero)
+    tiles.forEach((tile) => { quadtree.insert(tile) })
   })
 
   emitter.on('RunLoop:render', (interpolationPercentage) => {
@@ -62,7 +61,6 @@ document.addEventListener('DOMContentLoaded', function() {
     camera.begin()
     camera.follow(hero.frame)
     map.render(camera.viewport)
-    console.log(hero.frame)
     hero.render()
     camera.end()
   })
@@ -71,6 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
     devStats.render(fps, panic)
 
     quadtree.removeAll()
+    devStats.tock()
   })
 
   emitter.on('GameInputController:mousedown', (e) => {
