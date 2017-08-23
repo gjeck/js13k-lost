@@ -42,17 +42,25 @@ document.addEventListener('DOMContentLoaded', function() {
     gameInputController: gameInputController
   })
 
-  const enemyFrame = BoundingRect({ x: 40, y: 120, width: 25, height: 25 })
-  const movementBehavior = RandomMovementBehavior({
-    frame: enemyFrame,
-    targetFrame: hero.frame
-  })
+  const enemies = []
+  for (let i = 0; i < map.rows; ++i) {
+    for (let j = 0; j < map.cols; ++j) {
+      let x = map.tileSize * j + map.tileSize / 2
+      let y = map.tileSize * i + map.tileSize / 2
+      const enemyFrame = BoundingRect({ x: x, y: y, width: 25, height: 25 })
+      const movementBehavior = RandomMovementBehavior({
+        frame: enemyFrame,
+        targetFrame: hero.frame
+      })
 
-  const enemy = Enemy({
-    graphics: graphics,
-    frame: enemyFrame,
-    movementBehavior: movementBehavior
-  })
+      const enemy = Enemy({
+        graphics: graphics,
+        frame: enemyFrame,
+        movementBehavior: movementBehavior
+      })
+      enemies.push(enemy)
+    }
+  }
 
   let treePadding = map.tileSize
   const quadtree = Quadtree({
@@ -71,17 +79,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
   emitter.on('RunLoop:update', (delta) => {
     hero.update(delta)
-    enemy.update(delta)
+    enemies.forEach((enemy) => { enemy.update(delta) })
 
     quadtree.insert(hero)
-    quadtree.insert(enemy)
+    enemies.forEach((enemy) => { quadtree.insert(enemy) })
     walls.forEach((wall) => { quadtree.insert(wall) })
 
     let results = quadtree.query(hero.frame)
     collisionResolver.resolve(hero.frame, results)
 
-    let enemyResults = quadtree.query(enemy.frame)
-    collisionResolver.resolve(enemy.frame, enemyResults)
+    enemies.forEach((enemy) => {
+      let enemyResults = quadtree.query(enemy.frame)
+      collisionResolver.resolve(enemy.frame, enemyResults)
+    })
   })
 
   emitter.on('RunLoop:render', (interpolationPercentage) => {
@@ -90,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
     camera.follow(hero.frame)
     map.render(camera.viewport)
     hero.render()
-    enemy.render()
+    enemies.forEach((enemy) => { enemy.render() })
     camera.end()
   })
 
@@ -108,5 +118,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }, {once: true})
   })
 
-  runLoop.start()
+  document.addEventListener('visibilitychange', (e) => {
+    if ((document.hidden || document.visibilityState !== 'visible') && runLoop.isRunning()) {
+      runLoop.stop()
+    } else if (!document.hidden && document.visibilityState === 'visible' && !runLoop.isRunning()) {
+      runLoop.start()
+    }
+  })
+
+  if (!document.hidden && document.visibilityState === 'visible') {
+    runLoop.start()
+  }
 })
