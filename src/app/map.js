@@ -1,4 +1,4 @@
-import { Direction } from './maze'
+import Direction from './direction'
 import BoundingRect from './bounding_rect'
 import { randomIntInRange } from './utils'
 

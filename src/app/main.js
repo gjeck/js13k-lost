@@ -10,6 +10,9 @@ import MazeGenerator from './maze'
 import Quadtree from './quadtree'
 import { randomIntInRange } from './utils'
 import CollisionResolver from './collision_resolver'
+import Enemy from './enemy'
+import { RandomMovementBehavior } from './movement_behavior'
+import BoundingRect from './bounding_rect'
 
 document.addEventListener('DOMContentLoaded', function() {
   const canvas = document.getElementById('canvas')
@@ -39,6 +42,18 @@ document.addEventListener('DOMContentLoaded', function() {
     gameInputController: gameInputController
   })
 
+  const enemyFrame = BoundingRect({ x: 40, y: 120, width: 25, height: 25 })
+  const movementBehavior = RandomMovementBehavior({
+    frame: enemyFrame,
+    targetFrame: hero.frame
+  })
+
+  const enemy = Enemy({
+    graphics: graphics,
+    frame: enemyFrame,
+    movementBehavior: movementBehavior
+  })
+
   let treePadding = map.tileSize
   const quadtree = Quadtree({
     x: -treePadding,
@@ -56,12 +71,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
   emitter.on('RunLoop:update', (delta) => {
     hero.update(delta)
+    enemy.update(delta)
 
     quadtree.insert(hero)
+    quadtree.insert(enemy)
     walls.forEach((wall) => { quadtree.insert(wall) })
 
     let results = quadtree.query(hero.frame)
     collisionResolver.resolve(hero.frame, results)
+
+    let enemyResults = quadtree.query(enemy.frame)
+    collisionResolver.resolve(enemy.frame, enemyResults)
   })
 
   emitter.on('RunLoop:render', (interpolationPercentage) => {
@@ -70,6 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
     camera.follow(hero.frame)
     map.render(camera.viewport)
     hero.render()
+    enemy.render()
     camera.end()
   })
 
