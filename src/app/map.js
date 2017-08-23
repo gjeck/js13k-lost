@@ -13,13 +13,13 @@ function Map(spec) {
 
   maze[exit.row][exit.col] = 0
 
-  const getAllTiles = () => {
+  const getAllWalls = () => {
     let rects = []
     for (let row = 0; row < rows; ++row) {
       for (let col = 0; col < cols; ++col) {
         let tileRects = getTileRects(row, col)
         tileRects.forEach((rect) => {
-          rects.push(Tile(rect))
+          rects.push(Wall(rect))
         })
       }
     }
@@ -100,11 +100,11 @@ function Map(spec) {
     rows: rows,
     tileSize: tileSize,
     render: render,
-    getAllTiles: getAllTiles
+    getAllWalls: getAllWalls
   }
 }
 
-function Tile(spec) {
+function Wall(spec) {
   const s = spec || {}
   let frame = BoundingRect(s)
 

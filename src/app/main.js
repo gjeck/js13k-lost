@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
   })
 
   const collisionResolver = CollisionResolver()
-  const tiles = map.getAllTiles()
+  const walls = map.getAllWalls()
 
   emitter.on('RunLoop:begin', (timeStamp, frameDelta) => {
     devStats.tick()
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
     hero.update(delta)
 
     quadtree.insert(hero)
-    tiles.forEach((tile) => { quadtree.insert(tile) })
+    walls.forEach((wall) => { quadtree.insert(wall) })
 
     let results = quadtree.query(hero.frame)
     collisionResolver.resolve(hero.frame, results)
