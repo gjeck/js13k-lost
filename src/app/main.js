@@ -9,6 +9,7 @@ import DevStats from './dev_stats'
 import MazeGenerator from './maze'
 import Quadtree from './quadtree'
 import { randomIntInRange } from './utils'
+import CollisionResolver from './collision_resolver'
 
 document.addEventListener('DOMContentLoaded', function() {
   const canvas = document.getElementById('canvas')
@@ -46,6 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
     height: map.rows * map.tileSize + treePadding * 2
   })
 
+  const collisionResolver = CollisionResolver()
   const tiles = map.getAllTiles()
 
   emitter.on('RunLoop:begin', (timeStamp, frameDelta) => {
@@ -59,24 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
     tiles.forEach((tile) => { quadtree.insert(tile) })
 
     let results = quadtree.query(hero.frame)
-    results.forEach((result) => {
-      if (result === hero) {
-        return
-      }
-      let bottomCollision = hero.frame.maxY() - result.frame.y
-      let topCollision = result.frame.maxY() - hero.frame.y
-      let leftCollision = result.frame.maxX() - hero.frame.x
-      let rightCollision = hero.frame.maxX() - result.frame.x
-      if (topCollision < bottomCollision && topCollision < leftCollision && topCollision < rightCollision) {
-        hero.frame.y = result.frame.maxY()
-      } else if (bottomCollision < topCollision && bottomCollision < leftCollision && bottomCollision < rightCollision) {
-        hero.frame.y = result.frame.y - hero.frame.maxY() + hero.frame.y
-      } else if (leftCollision < rightCollision && leftCollision < topCollision && leftCollision < bottomCollision) {
-        hero.frame.x = result.frame.maxX()
-      } else if (rightCollision < leftCollision && rightCollision < topCollision && rightCollision < bottomCollision) {
-        hero.frame.x = result.frame.x - hero.frame.maxX() + hero.frame.x
-      }
-    })
+    collisionResolver.resolve(hero.frame, results)
   })
 
   emitter.on('RunLoop:render', (interpolationPercentage) => {
