@@ -1,4 +1,4 @@
-export default function CollisionResolver() {
+function CollisionResolver() {
   const resolve = (frame, collection) => {
     collection.forEach((item) => {
       if (frame === item) {
@@ -32,3 +32,5 @@ export default function CollisionResolver() {
     resolve: resolve
   }
 }
+
+export { CollisionResolver as default }

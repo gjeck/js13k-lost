@@ -1,4 +1,4 @@
-export default function BoundingRect(spec) {
+function BoundingRect(spec) {
   const s = spec || {}
   let x = s.x || 0
   let y = s.y || 0
@@ -56,3 +56,5 @@ export default function BoundingRect(spec) {
     containsPoint: containsPoint
   }
 }
+
+export { BoundingRect as default }

@@ -1,6 +1,6 @@
 import BoundingRect from './bounding_rect'
 
-export default function Hero(spec) {
+function Hero(spec) {
   const s = spec || {}
   s.width = s.width || 25
   s.height = s.height || 25
@@ -32,3 +32,5 @@ export default function Hero(spec) {
     render: render
   }
 }
+
+export { Hero as default }

@@ -1,4 +1,4 @@
-export default function Graphics(spec) {
+function Graphics(spec) {
   const s = spec || {}
   const canvas = s.canvas
   const ctx = s.canvas.getContext('2d')
@@ -64,3 +64,5 @@ export default function Graphics(spec) {
     smooth: smooth
   }
 }
+
+export { Graphics as default }

@@ -1,6 +1,6 @@
 import { clamp } from './utils'
 
-export default function Camera(spec) {
+function Camera(spec) {
   const s = spec || {}
   const graphics = s.graphics
   let maxX = s.maxX || 1000.0
@@ -103,3 +103,5 @@ export default function Camera(spec) {
     viewport: viewport
   }
 }
+
+export { Camera as default }

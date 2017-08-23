@@ -2,7 +2,7 @@ import { Direction } from './maze'
 import BoundingRect from './bounding_rect'
 import { randomIntInRange } from './utils'
 
-export default function Map(spec) {
+function Map(spec) {
   const s = spec || {}
   const graphics = s.graphics
   const maze = s.maze
@@ -112,3 +112,5 @@ function Tile(spec) {
     frame: frame
   }
 }
+
+export { Map as default }

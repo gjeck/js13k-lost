@@ -1,6 +1,6 @@
 import BoundingRect from './bounding_rect'
 
-export default function QuadTree(spec) {
+function QuadTree(spec) {
   const s = spec || {}
   const maxItems = s.maxItems || 30
   const depth = s.depth || 0
@@ -131,3 +131,5 @@ export default function QuadTree(spec) {
     countAll: countAll
   }
 }
+
+export { QuadTree as default }

@@ -1,4 +1,4 @@
-export default function DevStats(spec) {
+function DevStats(spec) {
   const s = spec || {}
   const elem = s.elem
   let isEnabled = s.isEnabled || true
@@ -51,3 +51,5 @@ export default function DevStats(spec) {
     tock: tock
   }
 }
+
+export { DevStats as default }

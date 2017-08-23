@@ -1,4 +1,4 @@
-export default function GameInputController(spec) {
+function GameInputController(spec) {
   const s = spec || {}
   const graphics = s.graphics
   const emitter = s.emitter
@@ -66,3 +66,5 @@ const KeyMapping = Object.freeze({
   down: 'KeyS',
   right: 'KeyD'
 })
+
+export { GameInputController as default }

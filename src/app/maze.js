@@ -1,6 +1,6 @@
 import { shuffle } from './utils'
 
-export default function MazeGenerator() {
+function MazeGenerator() {
   const generate = (rows, cols, px, py) => {
     let x = px || 0
     let y = py || 0
@@ -72,4 +72,7 @@ const Direction = Object.freeze({
   opposite: { e: 8, w: 4, n: 2, s: 1 }
 })
 
-export { Direction }
+export {
+  MazeGenerator as default,
+  Direction
+}
