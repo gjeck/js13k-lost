@@ -56,7 +56,8 @@ function GameInputController(spec) {
     isUp: isUp,
     isLeft: isLeft,
     isDown: isDown,
-    isRight: isRight
+    isRight: isRight,
+    mouse: mouse
   }
 }
 

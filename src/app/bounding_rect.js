@@ -42,6 +42,12 @@ function BoundingRect(spec) {
       this.maxY() >= pY
   }
 
+  const centerTo = function(other) {
+    this.x = other.x + ((other.width - this.width) / 2)
+    this.y = other.y + ((other.height - this.height) / 2)
+    return this
+  }
+
   return {
     x: x,
     y: y,
@@ -53,7 +59,8 @@ function BoundingRect(spec) {
     maxY: maxY,
     intersects: intersects,
     contains: contains,
-    containsPoint: containsPoint
+    containsPoint: containsPoint,
+    centerTo: centerTo
   }
 }
 
