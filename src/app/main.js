@@ -43,8 +43,8 @@ document.addEventListener('DOMContentLoaded', function() {
   })
 
   const enemies = []
-  for (let i = 0; i < map.rows; ++i) {
-    for (let j = 0; j < map.cols; ++j) {
+  for (let i = 0; i < map.rows; i += 2) {
+    for (let j = 0; j < map.cols; j += 2) {
       let x = map.tileSize * j + map.tileSize / 2
       let y = map.tileSize * i + map.tileSize / 2
       const enemyFrame = BoundingRect({ x: x, y: y, width: 25, height: 25 })
@@ -86,11 +86,11 @@ document.addEventListener('DOMContentLoaded', function() {
     walls.forEach((wall) => { quadtree.insert(wall) })
 
     let results = quadtree.query(hero.frame)
-    collisionResolver.resolve(hero.frame, results)
+    collisionResolver.resolve(hero, results)
 
     enemies.forEach((enemy) => {
       let enemyResults = quadtree.query(enemy.frame)
-      collisionResolver.resolve(enemy.frame, enemyResults)
+      collisionResolver.resolve(enemy, enemyResults)
     })
   })
 

@@ -1,29 +1,29 @@
 function CollisionResolver() {
-  const resolve = (frame, collection) => {
+  const resolve = (entity, collection) => {
     collection.forEach((item) => {
-      if (frame === item) {
+      if (entity.frame === item) {
         return
       }
-      let bottomCollision = frame.maxY() - item.frame.y
-      let topCollision = item.frame.maxY() - frame.y
-      let leftCollision = item.frame.maxX() - frame.x
-      let rightCollision = frame.maxX() - item.frame.x
+      let bottomCollision = entity.frame.maxY() - item.frame.y
+      let topCollision = item.frame.maxY() - entity.frame.y
+      let leftCollision = item.frame.maxX() - entity.frame.x
+      let rightCollision = entity.frame.maxX() - item.frame.x
       if (topCollision < bottomCollision &&
         topCollision < leftCollision &&
         topCollision < rightCollision) {
-        frame.y = item.frame.maxY()
+        entity.frame.y = item.frame.maxY()
       } else if (bottomCollision < topCollision &&
         bottomCollision < leftCollision &&
          bottomCollision < rightCollision) {
-        frame.y = item.frame.y - frame.maxY() + frame.y
+        entity.frame.y = item.frame.y - entity.frame.maxY() + entity.frame.y
       } else if (leftCollision < rightCollision &&
          leftCollision < topCollision &&
          leftCollision < bottomCollision) {
-        frame.x = item.frame.maxX()
+        entity.frame.x = item.frame.maxX()
       } else if (rightCollision < leftCollision &&
         rightCollision < topCollision &&
          rightCollision < bottomCollision) {
-        frame.x = item.frame.x - frame.maxX() + frame.x
+        entity.frame.x = item.frame.x - entity.frame.maxX() + entity.frame.x
       }
     })
   }
