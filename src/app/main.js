@@ -28,8 +28,9 @@ document.addEventListener('DOMContentLoaded', function() {
   })
   const camera = Camera({
     graphics: graphics,
-    maxX: map.cols * map.tileSize,
-    maxY: map.rows * map.tileSize
+    maxX: map.cols * map.tileSize + map.wallDimension(),
+    maxY: map.rows * map.tileSize + map.wallDimension(),
+    viewportOffset: map.wallDimension() / 2
   })
   const gameInputController = GameInputController({
     graphics: graphics,

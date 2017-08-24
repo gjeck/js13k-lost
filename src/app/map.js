@@ -26,6 +26,10 @@ function Map(spec) {
     return rects
   }
 
+  const wallDimension = () => {
+    return tileSize / 8
+  }
+
   const render = (viewport) => {
     let minRow = Math.max(Math.floor(viewport.top / tileSize), 0)
     let maxRow = Math.min(Math.floor(viewport.bottom / tileSize), rows - 1)
@@ -40,12 +44,12 @@ function Map(spec) {
   }
 
   const getTileRects = (row, col) => {
-    let x = tileSize * col
-    let y = tileSize * row
-    let tileNum = maze[row][col]
-    let edgeDimension = tileSize / 8
-    let halfEdge = edgeDimension / 2
-    let rects = []
+    const x = tileSize * col
+    const y = tileSize * row
+    const tileNum = maze[row][col]
+    const edgeDimension = wallDimension()
+    const halfEdge = edgeDimension / 2
+    const rects = []
 
     if (tileNum === 0) {
       return rects
@@ -100,7 +104,8 @@ function Map(spec) {
     rows: rows,
     tileSize: tileSize,
     render: render,
-    getAllWalls: getAllWalls
+    getAllWalls: getAllWalls,
+    wallDimension: wallDimension
   }
 }
 
