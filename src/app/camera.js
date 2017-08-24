@@ -7,8 +7,8 @@ function Camera(spec) {
   let maxY = s.maxY || 1000.0
   let distance = s.distance || 1000.0
   let fieldOfView = s.fieldOfView || Math.PI / 4.0
-  let lookat = s.lookat || { x: 0, y: 0 }
-  let viewport = s.viewport || {
+  const lookat = s.lookat || { x: 0, y: 0 }
+  const viewport = s.viewport || {
     left: 0,
     right: 0,
     top: 0,

@@ -5,7 +5,7 @@ function MazeGenerator() {
   const generate = (rows, cols, px, py) => {
     let x = px || 0
     let y = py || 0
-    let grid = []
+    const grid = []
     for (let i = 0; i < rows; ++i) {
       let cells = []
       for (let j = 0; j < cols; ++j) {

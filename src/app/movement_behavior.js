@@ -6,8 +6,8 @@ function RandomMovementBehavior(spec) {
   const frame = s.frame
   const targetFrame = s.targetFrame
   let speed = s.speed || 0.31
-  let lastPosition = { x: frame.x, y: frame.y }
-  let targetVector = { x: targetFrame.centerX(), y: targetFrame.centerY() }
+  const lastPosition = { x: frame.x, y: frame.y }
+  const targetVector = { x: targetFrame.centerX(), y: targetFrame.centerY() }
   let direction = s.direction || Direction.none
   let randomness = s.randomness || 0.04
   let actionDistance = s.actionDistance || 250

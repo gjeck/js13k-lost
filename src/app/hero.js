@@ -6,7 +6,7 @@ function Hero(spec) {
   s.height = s.height || 25
   const graphics = s.graphics
   const inputController = s.gameInputController
-  let frame = s.rect || BoundingRect(spec)
+  const frame = s.rect || BoundingRect(spec)
   let speed = s.speed || 0.32
 
   const update = (delta) => {

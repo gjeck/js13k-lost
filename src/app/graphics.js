@@ -5,7 +5,7 @@ function Graphics(spec) {
   const initialWidth = canvas.width
   const initialHeight = canvas.height
   const containerWindow = s.containerWindow || window
-  let ratio = s.ratio || {}
+  const ratio = s.ratio || {}
 
   const resize = () => {
     const scale = Math.min(

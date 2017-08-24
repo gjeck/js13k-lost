@@ -106,7 +106,7 @@ function Map(spec) {
 
 function Wall(spec) {
   const s = spec || {}
-  let frame = BoundingRect(s)
+  const frame = BoundingRect(s)
 
   return {
     frame: frame

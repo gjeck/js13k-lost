@@ -3,8 +3,8 @@ function GameInputController(spec) {
   const graphics = s.graphics
   const emitter = s.emitter
   const docWindow = s.docWindow || window
-  let keyboard = {}
-  let mouse = {}
+  const keyboard = {}
+  const mouse = {}
 
   const setMousePoint = (x, y) => {
     mouse.x = x - graphics.canvas.offsetLeft

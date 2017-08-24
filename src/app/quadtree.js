@@ -5,8 +5,8 @@ function QuadTree(spec) {
   const maxItems = s.maxItems || 30
   const depth = s.depth || 0
   const bounds = BoundingRect(spec)
-  let items = []
-  let nodes = []
+  const items = []
+  const nodes = []
 
   const removeAll = () => {
     items.splice(0, items.length)
@@ -31,7 +31,7 @@ function QuadTree(spec) {
     let x = bounds.x
     let y = bounds.y
 
-    let northEastTree = QuadTree({
+    const northEastTree = QuadTree({
       depth: depth + 1,
       x: x + newWidth,
       y: y,
@@ -39,7 +39,7 @@ function QuadTree(spec) {
       height: newHeight
     })
     nodes.push(northEastTree)
-    let northWestTree = QuadTree({
+    const northWestTree = QuadTree({
       depth: depth + 1,
       x: x,
       y: y,
@@ -47,7 +47,7 @@ function QuadTree(spec) {
       height: newHeight
     })
     nodes.push(northWestTree)
-    let southWestTree = QuadTree({
+    const southWestTree = QuadTree({
       depth: depth + 1,
       x: x,
       y: y + newHeight,
@@ -55,7 +55,7 @@ function QuadTree(spec) {
       height: newHeight
     })
     nodes.push(southWestTree)
-    let southEastTree = QuadTree({
+    const southEastTree = QuadTree({
       depth: depth + 1,
       x: x + newWidth,
       y: y + newHeight,
@@ -96,7 +96,7 @@ function QuadTree(spec) {
   }
 
   const query = (boundingRect) => {
-    let results = []
+    const results = []
 
     if (!bounds.contains(boundingRect)) {
       return results
@@ -110,7 +110,7 @@ function QuadTree(spec) {
 
     nodes.forEach((node) => {
       if (node.bounds.intersects(boundingRect)) {
-        let childResults = node.query(boundingRect)
+        const childResults = node.query(boundingRect)
         childResults.forEach((child) => {
           results.push(child)
         })

@@ -43,10 +43,10 @@ document.addEventListener('DOMContentLoaded', function() {
   })
 
   const enemies = []
-  for (let i = 0; i < map.rows; i += 2) {
-    for (let j = 0; j < map.cols; j += 2) {
-      let x = map.tileSize * j + map.tileSize / 2
-      let y = map.tileSize * i + map.tileSize / 2
+  for (let i = map.rows / 4; i < map.rows; i += 2) {
+    for (let j = map.cols / 4; j < map.cols; j += 2) {
+      let x = map.tileSize * j + (map.tileSize / 2)
+      let y = map.tileSize * i + (map.tileSize / 2)
       const enemyFrame = BoundingRect({ x: x, y: y, width: 25, height: 25 })
       const movementBehavior = RandomMovementBehavior({
         frame: enemyFrame,
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  let treePadding = map.tileSize
+  const treePadding = map.tileSize
   const quadtree = Quadtree({
     x: -treePadding,
     y: -treePadding,
@@ -85,11 +85,11 @@ document.addEventListener('DOMContentLoaded', function() {
     enemies.forEach((enemy) => { quadtree.insert(enemy) })
     walls.forEach((wall) => { quadtree.insert(wall) })
 
-    let results = quadtree.query(hero.frame)
+    const results = quadtree.query(hero.frame)
     collisionResolver.resolve(hero, results)
 
     enemies.forEach((enemy) => {
-      let enemyResults = quadtree.query(enemy.frame)
+      const enemyResults = quadtree.query(enemy.frame)
       collisionResolver.resolve(enemy, enemyResults)
     })
   })
