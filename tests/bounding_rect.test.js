@@ -33,4 +33,12 @@ describe('bounding rects', () => {
     expect(box.containsPoint(-1, 5)).toBe(false)
     expect(box.containsPoint(100, 100)).toBe(false)
   })
+
+  test('it can center to another rect', () => {
+    const boxA = BoundingRect({ x: 0, y: 0, width: 8, height: 8 })
+    const boxB = BoundingRect({ x: 0, y: 0, width: 4, height: 4 })
+    boxB.centerTo(boxA)
+    expect(boxB.centerX()).toEqual(boxA.centerX())
+    expect(boxB.centerY()).toEqual(boxA.centerY())
+  })
 })
