@@ -37,10 +37,6 @@ function Graphics(spec) {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
   }
 
-  const smooth = (enabled) => {
-    ctx['imageSmoothingEnabled'] = enabled
-  }
-
   canvas.addEventListener('click', function() {
     this.focus()
   })
@@ -60,8 +56,7 @@ function Graphics(spec) {
     ratio: ratio,
     drawCircle: drawCircle,
     drawRect: drawRect,
-    reset: reset,
-    smooth: smooth
+    reset: reset
   }
 }
 

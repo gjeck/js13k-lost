@@ -26,10 +26,10 @@ function QuadTree(spec) {
   }
 
   const subDivide = () => {
-    let newWidth = Math.floor(bounds.width / 2)
-    let newHeight = Math.floor(bounds.height / 2)
-    let x = bounds.x
-    let y = bounds.y
+    const newWidth = Math.floor(bounds.width / 2)
+    const newHeight = Math.floor(bounds.height / 2)
+    const x = bounds.x
+    const y = bounds.y
 
     const northEastTree = QuadTree({
       depth: depth + 1,
