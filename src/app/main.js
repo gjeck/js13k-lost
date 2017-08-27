@@ -13,11 +13,13 @@ import CollisionResolver from './collision_resolver'
 import Enemy from './enemy'
 import { RandomMovementBehavior } from './movement_behavior'
 import BoundingRect from './bounding_rect'
+import Projectile from './projectile'
+import ArrowRenderer from './arrow_renderer'
 
 document.addEventListener('DOMContentLoaded', function() {
   const canvas = document.getElementById('canvas')
   const graphics = Graphics({ canvas: canvas })
-  graphics.smooth(false)
+  graphics.ctx.imageSmoothingEnabled = false
   const emitter = new EventEmitter()
   const runLoop = RunLoop({ emitter: emitter })
   const devStats = DevStats({ elem: document.getElementById('devStats') })
@@ -63,6 +65,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
+  const arrowFrame = BoundingRect({ x: 0, y: 0, width: 10, height: 10 })
+  const arrowRenderer = ArrowRenderer({ graphics: graphics, frame: arrowFrame })
+  const arrow = Projectile({
+    frame: arrowFrame,
+    renderer: arrowRenderer,
+    sourceFrame: hero.frame,
+    graphics: graphics
+  })
+
   const treePadding = map.tileSize
   const quadtree = Quadtree({
     x: -treePadding,
@@ -72,7 +83,6 @@ document.addEventListener('DOMContentLoaded', function() {
   })
 
   const collisionResolver = CollisionResolver()
-  const walls = map.getAllWalls()
 
   emitter.on('RunLoop:begin', (timeStamp, frameDelta) => {
     devStats.tick()
@@ -81,10 +91,13 @@ document.addEventListener('DOMContentLoaded', function() {
   emitter.on('RunLoop:update', (delta) => {
     hero.update(delta)
     enemies.forEach((enemy) => { enemy.update(delta) })
+    arrow.update(delta)
 
     quadtree.insert(hero)
     enemies.forEach((enemy) => { quadtree.insert(enemy) })
-    walls.forEach((wall) => { quadtree.insert(wall) })
+    map.walls.forEach((wall) => { quadtree.insert(wall) })
+
+    quadtree.insert(arrow)
 
     const results = quadtree.query(hero.frame)
     collisionResolver.resolve(hero, results)
@@ -93,6 +106,9 @@ document.addEventListener('DOMContentLoaded', function() {
       const enemyResults = quadtree.query(enemy.frame)
       collisionResolver.resolve(enemy, enemyResults)
     })
+
+    const arrowResults = quadtree.query(arrow.frame)
+    collisionResolver.resolve(arrow, arrowResults)
   })
 
   emitter.on('RunLoop:render', (interpolationPercentage) => {
@@ -100,6 +116,7 @@ document.addEventListener('DOMContentLoaded', function() {
     camera.begin()
     camera.follow(hero.frame)
     map.render(camera.viewport)
+    arrow.render()
     hero.render()
     enemies.forEach((enemy) => { enemy.render() })
     camera.end()
@@ -113,10 +130,12 @@ document.addEventListener('DOMContentLoaded', function() {
   })
 
   emitter.on('GameInputController:mousedown', (e) => {
-    canvas.classList.toggle('shake')
-    canvas.addEventListener('animationend', () => {
-      canvas.classList.toggle('shake')
-    }, {once: true})
+    // canvas.classList.toggle('shake')
+    // canvas.addEventListener('animationend', () => {
+    //   canvas.classList.toggle('shake')
+    // }, {once: true})
+    const coord = camera.screenToWorld(gameInputController.mouse.x, gameInputController.mouse.y)
+    arrow.fire(coord.x, coord.y)
   })
 
   document.addEventListener('visibilitychange', (e) => {

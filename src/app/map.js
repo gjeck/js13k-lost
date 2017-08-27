@@ -9,22 +9,9 @@ function Map(spec) {
   const cols = maze[0].length
   const rows = maze.length
   const tileSize = s.tileSize || 200
-  const exit = s.exit || {row: randomIntInRange(0, rows), col: cols - 1}
+  const exit = s.exit || { row: randomIntInRange(0, rows), col: cols - 1 }
 
   maze[exit.row][exit.col] = 0
-
-  const getAllWalls = () => {
-    let rects = []
-    for (let row = 0; row < rows; ++row) {
-      for (let col = 0; col < cols; ++col) {
-        let tileRects = getTileRects(row, col)
-        tileRects.forEach((rect) => {
-          rects.push(Wall(rect))
-        })
-      }
-    }
-    return rects
-  }
 
   const wallDimension = () => {
     return tileSize / 8
@@ -89,10 +76,29 @@ function Map(spec) {
     return rects
   }
 
+  const tileCache = (function() {
+    const w = {}
+    for (let row = 0; row < rows; ++row) {
+      for (let col = 0; col < cols; ++col) {
+        w[`${row},${col}`] = getTileRects(row, col)
+      }
+    }
+    return w
+  }())
+
+  const walls = (function() {
+    return Object.keys(tileCache)
+      .reduce((acc, next) => {
+        const rects = tileCache[next]
+        rects.forEach((rect) => acc.push(Wall(rect)))
+        return acc
+      }, [])
+  }())
+
   const drawTile = (row, col) => {
     graphics.ctx.save()
     graphics.ctx.fillStyle = 'black'
-    let rects = getTileRects(row, col)
+    const rects = tileCache[`${row},${col}`]
     rects.forEach((rect) => {
       graphics.drawRect(rect.x, rect.y, rect.width, rect.height)
     })
@@ -104,8 +110,8 @@ function Map(spec) {
     rows: rows,
     tileSize: tileSize,
     render: render,
-    getAllWalls: getAllWalls,
-    wallDimension: wallDimension
+    wallDimension: wallDimension,
+    walls: walls
   }
 }
 
