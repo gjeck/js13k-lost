@@ -16,15 +16,6 @@ function QuadTree(spec) {
     nodes.splice(0, nodes.length)
   }
 
-  const countAll = () => {
-    let count = 0
-    count += items.length
-    nodes.forEach((node) => {
-      count += node.countAll()
-    })
-    return count
-  }
-
   const subDivide = () => {
     const newWidth = Math.floor(bounds.width / 2)
     const newHeight = Math.floor(bounds.height / 2)
@@ -127,8 +118,7 @@ function QuadTree(spec) {
     insert: insert,
     query: query,
     items: items,
-    nodes: nodes,
-    countAll: countAll
+    nodes: nodes
   }
 }
 

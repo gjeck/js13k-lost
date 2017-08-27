@@ -1,14 +1,17 @@
 import BoundingRect from './bounding_rect'
+import { Meta, MetaStatus } from './meta'
 
 function Projectile(spec) {
   const s = spec || {}
   const sourceFrame = s.sourceFrame
   const renderer = s.renderer
-  const frame = s.frame || BoundingRect(spec)
-  const speed = s.speed || 0.9
+  const frame = s.frame || BoundingRect(s)
+  const meta = s.meta || Meta(s)
+  const speed = s.speed || 1.2
   const targetVector = {}
 
   const fire = (x, y) => {
+    meta.status |= MetaStatus.active | MetaStatus.visible
     frame.centerTo(sourceFrame)
     targetVector.x = x - frame.centerX()
     targetVector.y = y - frame.centerY()
@@ -19,11 +22,17 @@ function Projectile(spec) {
   }
 
   const update = (delta) => {
+    if ((meta.status & MetaStatus.active) === 0) {
+      return
+    }
     frame.x += targetVector.x * speed * delta
     frame.y += targetVector.y * speed * delta
   }
 
   const render = () => {
+    if ((meta.status & MetaStatus.visible) === 0) {
+      return
+    }
     renderer.render(targetVector.angle)
   }
 
@@ -31,7 +40,8 @@ function Projectile(spec) {
     frame: frame,
     fire: fire,
     update: update,
-    render: render
+    render: render,
+    meta: meta
   }
 }
 

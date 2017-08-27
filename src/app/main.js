@@ -15,6 +15,7 @@ import { RandomMovementBehavior } from './movement_behavior'
 import BoundingRect from './bounding_rect'
 import Projectile from './projectile'
 import ArrowRenderer from './arrow_renderer'
+import { MetaType } from './meta'
 
 document.addEventListener('DOMContentLoaded', function() {
   const canvas = document.getElementById('canvas')
@@ -42,6 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
     graphics: graphics,
     x: 20,
     y: 20,
+    health: 100,
     gameInputController: gameInputController
   })
 
@@ -59,7 +61,9 @@ document.addEventListener('DOMContentLoaded', function() {
       const enemy = Enemy({
         graphics: graphics,
         frame: enemyFrame,
-        movementBehavior: movementBehavior
+        movementBehavior: movementBehavior,
+        health: 1,
+        type: MetaType.enemy
       })
       enemies.push(enemy)
     }
@@ -71,7 +75,9 @@ document.addEventListener('DOMContentLoaded', function() {
     frame: arrowFrame,
     renderer: arrowRenderer,
     sourceFrame: hero.frame,
-    graphics: graphics
+    graphics: graphics,
+    type: MetaType.arrow,
+    damage: 1
   })
 
   const treePadding = map.tileSize

@@ -1,12 +1,15 @@
 import BoundingRect from './bounding_rect'
+import { Meta, MetaType } from './meta'
 
 function Hero(spec) {
   const s = spec || {}
   s.width = s.width || 25
   s.height = s.height || 25
+  s.type = s.type || MetaType.hero
   const graphics = s.graphics
   const inputController = s.gameInputController
-  const frame = s.rect || BoundingRect(spec)
+  const meta = s.meta || Meta(s)
+  const frame = s.rect || BoundingRect(s)
   let speed = s.speed || 0.32
 
   const update = (delta) => {
@@ -29,7 +32,8 @@ function Hero(spec) {
   return {
     frame: frame,
     update: update,
-    render: render
+    render: render,
+    meta: meta
   }
 }
 

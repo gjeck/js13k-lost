@@ -1,6 +1,7 @@
 import Direction from './direction'
 import BoundingRect from './bounding_rect'
 import { randomIntInRange } from './utils'
+import { Meta, MetaType } from './meta'
 
 function Map(spec) {
   const s = spec || {}
@@ -117,10 +118,13 @@ function Map(spec) {
 
 function Wall(spec) {
   const s = spec || {}
+  s.type = s.type || MetaType.wall
   const frame = BoundingRect(s)
+  const meta = Meta(s)
 
   return {
-    frame: frame
+    frame: frame,
+    meta: meta
   }
 }
 
