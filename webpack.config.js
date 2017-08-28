@@ -34,6 +34,11 @@ let config = {
         fallback: "style-loader", 
         use: "css-loader"
       })
+    }, {
+      test: /(png|svg)/,
+      use: {
+        loader: 'file-loader'
+      }
     }]
   },
   plugins: [

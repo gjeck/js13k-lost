@@ -15,7 +15,7 @@ function Map(spec) {
   maze[exit.row][exit.col] = 0
 
   const wallDimension = () => {
-    return tileSize / 8
+    return Math.ceil(tileSize / 8)
   }
 
   const render = (viewport) => {
@@ -36,7 +36,7 @@ function Map(spec) {
     const y = tileSize * row
     const tileNum = maze[row][col]
     const edgeDimension = wallDimension()
-    const halfEdge = edgeDimension / 2
+    const halfEdge = Math.ceil(edgeDimension / 2)
     const rects = []
 
     if (tileNum === 0) {

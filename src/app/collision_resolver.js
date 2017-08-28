@@ -6,7 +6,8 @@ function CollisionResolver() {
       if (entity === item) {
         return
       }
-      const ignoreResolve = (item.meta.status & MetaStatus.active) === 0 ||
+      const ignoreResolve = (entity.meta.type === MetaType.hero && item.meta.type === MetaType.arrow) ||
+        (item.meta.status & MetaStatus.active) === 0 ||
         (entity.meta.status & MetaStatus.active) === 0
       const bottomCollision = entity.frame.maxY() - item.frame.y
       const topCollision = item.frame.maxY() - entity.frame.y
