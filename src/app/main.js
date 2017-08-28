@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const mazeGenerator = MazeGenerator()
   const map = Map({
     graphics: graphics,
-    maze: mazeGenerator.generate(16, 16, randomIntInRange(16), randomIntInRange(16))
+    maze: mazeGenerator.generate(20, 20, randomIntInRange(20), randomIntInRange(20))
   })
   const camera = Camera({
     graphics: graphics,
@@ -37,6 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
   })
   const gameInputController = GameInputController({
     graphics: graphics,
+    camera: camera,
     emitter: emitter
   })
   const hero = Hero({
@@ -140,8 +141,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // canvas.addEventListener('animationend', () => {
     //   canvas.classList.toggle('shake')
     // }, {once: true})
-    const coord = camera.screenToWorld(gameInputController.mouse.x, gameInputController.mouse.y)
-    arrow.fire(coord.x, coord.y)
+    arrow.fire(gameInputController.mouse.x, gameInputController.mouse.y)
   })
 
   document.addEventListener('visibilitychange', (e) => {

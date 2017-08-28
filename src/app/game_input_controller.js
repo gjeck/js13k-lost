@@ -1,6 +1,7 @@
 function GameInputController(spec) {
   const s = spec || {}
   const graphics = s.graphics
+  const camera = s.camera
   const emitter = s.emitter
   const docWindow = s.docWindow || window
   const keyboard = {}
@@ -11,6 +12,7 @@ function GameInputController(spec) {
     mouse.y = y - graphics.canvas.offsetTop
     mouse.x *= graphics.ratio.x
     mouse.y *= graphics.ratio.y
+    camera.screenToWorld(mouse.x, mouse.y, mouse)
   }
 
   const isUp = () => {
