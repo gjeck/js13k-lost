@@ -35,7 +35,7 @@ let config = {
         use: "css-loader"
       })
     }, {
-      test: /(png|svg)/,
+      test: /\.(png|svg)$/,
       use: {
         loader: 'file-loader'
       }
