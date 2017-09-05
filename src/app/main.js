@@ -16,6 +16,7 @@ import BoundingRect from './bounding_rect'
 import Projectile from './projectile'
 import ArrowRenderer from './arrow_renderer'
 import { MetaType } from './meta'
+import Light from './light'
 
 document.addEventListener('DOMContentLoaded', function() {
   const canvas = document.getElementById('canvas')
@@ -91,6 +92,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
   const collisionResolver = CollisionResolver()
 
+  const light = Light({
+    x: 0,
+    y: 0,
+    width: canvas.width,
+    height: canvas.height,
+    target: hero,
+    graphics: graphics,
+    map: map
+  })
+
   emitter.on('RunLoop:begin', (timeStamp, frameDelta) => {
     devStats.tick()
   })
@@ -103,7 +114,6 @@ document.addEventListener('DOMContentLoaded', function() {
     quadtree.insert(hero)
     enemies.forEach((enemy) => { quadtree.insert(enemy) })
     map.walls.forEach((wall) => { quadtree.insert(wall) })
-
     quadtree.insert(arrow)
 
     const results = quadtree.query(hero.frame)
@@ -120,12 +130,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
   emitter.on('RunLoop:render', (interpolationPercentage) => {
     graphics.reset()
+    graphics.ctx.fillStyle = 'black'
+    graphics.ctx.fillRect(0, 0, graphics.canvas.width, graphics.canvas.height)
+
     camera.begin()
     camera.follow(hero.frame)
+    light.closestIntersection(camera.viewport)
     map.render(camera.viewport)
     arrow.render()
     hero.render()
     enemies.forEach((enemy) => { enemy.render() })
+
+    light.follow(hero.frame)
+
+    graphics.ctx.save()
+
     camera.end()
   })
 

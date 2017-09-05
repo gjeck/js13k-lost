@@ -18,19 +18,6 @@ function Map(spec) {
     return Math.ceil(tileSize / 8)
   }
 
-  const render = (viewport) => {
-    let minRow = Math.max(Math.floor(viewport.top / tileSize), 0)
-    let maxRow = Math.min(Math.floor(viewport.bottom / tileSize), rows - 1)
-    let minCol = Math.max(Math.floor(viewport.left / tileSize), 0)
-    let maxCol = Math.min(Math.floor(viewport.right / tileSize), cols - 1)
-
-    for (let row = minRow; row <= maxRow; ++row) {
-      for (let col = minCol; col <= maxCol; ++col) {
-        drawTile(row, col)
-      }
-    }
-  }
-
   const getTileRects = (row, col) => {
     const x = tileSize * col
     const y = tileSize * row
@@ -77,7 +64,7 @@ function Map(spec) {
     return rects
   }
 
-  const tileCache = (function() {
+  const tileRectCache = (function() {
     const w = {}
     for (let row = 0; row < rows; ++row) {
       for (let col = 0; col < cols; ++col) {
@@ -88,18 +75,62 @@ function Map(spec) {
   }())
 
   const walls = (function() {
-    return Object.keys(tileCache)
+    return Object.keys(tileRectCache)
       .reduce((acc, next) => {
-        const rects = tileCache[next]
+        const rects = tileRectCache[next]
         rects.forEach((rect) => acc.push(Wall(rect)))
         return acc
       }, [])
   }())
 
+  const tileLineCache = (function() {
+    const l = {}
+    for (let row = 0; row < rows; ++row) {
+      for (let col = 0; col < cols; ++col) {
+        const items = tileRectCache[`${row},${col}`]
+        l[`${row},${col}`] = []
+        items.forEach((item) => {
+          const top = { x1: item.x, x2: item.x + item.width, y1: item.y, y2: item.y }
+          const left = { x1: item.x, x2: item.x, y1: item.y, y2: item.y + item.height }
+          const right = { x1: item.x + item.width, x2: item.x + item.width, y1: item.y, y2: item.y + item.height }
+          const bottom = { x1: item.x, x2: item.x + item.width, y1: item.y + item.height, y2: item.y + item.height }
+          l[`${row},${col}`] = l[`${row},${col}`].concat([top, left, right, bottom])
+        })
+      }
+    }
+    return l
+  }())
+
+  const linesAt = (row, col) => {
+    return tileLineCache[`${row},${col}`]
+  }
+
+  const rowsAndColsInViewport = (viewport) => {
+    return {
+      minRow: Math.max(Math.floor(viewport.top / tileSize), 0),
+      maxRow: Math.min(Math.floor(viewport.bottom / tileSize), rows - 1),
+      minCol: Math.max(Math.floor(viewport.left / tileSize), 0),
+      maxCol: Math.min(Math.floor(viewport.right / tileSize), cols - 1)
+    }
+  }
+
+  const render = (viewport) => {
+    const minRow = Math.max(Math.floor(viewport.top / tileSize), 0)
+    const maxRow = Math.min(Math.floor(viewport.bottom / tileSize), rows - 1)
+    const minCol = Math.max(Math.floor(viewport.left / tileSize), 0)
+    const maxCol = Math.min(Math.floor(viewport.right / tileSize), cols - 1)
+
+    for (let row = minRow; row <= maxRow; ++row) {
+      for (let col = minCol; col <= maxCol; ++col) {
+        drawTile(row, col)
+      }
+    }
+  }
+
   const drawTile = (row, col) => {
     graphics.ctx.save()
     graphics.ctx.fillStyle = 'black'
-    const rects = tileCache[`${row},${col}`]
+    const rects = tileRectCache[`${row},${col}`]
     rects.forEach((rect) => {
       graphics.drawRect(rect.x, rect.y, rect.width, rect.height)
     })
@@ -112,7 +143,9 @@ function Map(spec) {
     tileSize: tileSize,
     render: render,
     wallDimension: wallDimension,
-    walls: walls
+    walls: walls,
+    linesAt: linesAt,
+    rowsAndColsInViewport: rowsAndColsInViewport
   }
 }
 

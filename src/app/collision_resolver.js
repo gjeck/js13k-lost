@@ -3,7 +3,7 @@ import { MetaType, MetaStatus } from './meta'
 function CollisionResolver() {
   const resolve = (entity, collection) => {
     collection.forEach((item) => {
-      if (entity === item) {
+      if (entity === item || item.meta.type === MetaType.none) {
         return
       }
       const ignoreResolve = (entity.meta.type === MetaType.hero && item.meta.type === MetaType.arrow) ||
