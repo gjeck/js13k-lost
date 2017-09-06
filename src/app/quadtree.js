@@ -1,10 +1,10 @@
-import BoundingRect from './bounding_rect'
+import createBoundingRect from './bounding_rect'
 
 function QuadTree(spec) {
   const s = spec || {}
   const maxItems = s.maxItems || 30
   const depth = s.depth || 0
-  const bounds = BoundingRect(spec)
+  const bounds = createBoundingRect(spec)
   const items = []
   const nodes = []
 
@@ -86,22 +86,22 @@ function QuadTree(spec) {
     return true
   }
 
-  const query = (boundingRect) => {
+  const query = (createBoundingRect) => {
     const results = []
 
-    if (!bounds.contains(boundingRect)) {
+    if (!bounds.contains(createBoundingRect)) {
       return results
     }
 
     items.forEach((item) => {
-      if (item.frame.intersects(boundingRect)) {
+      if (item.frame.intersects(createBoundingRect)) {
         results.push(item)
       }
     })
 
     nodes.forEach((node) => {
-      if (node.bounds.intersects(boundingRect)) {
-        const childResults = node.query(boundingRect)
+      if (node.bounds.intersects(createBoundingRect)) {
+        const childResults = node.query(createBoundingRect)
         childResults.forEach((child) => {
           results.push(child)
         })

@@ -12,7 +12,7 @@ import { randomIntInRange } from './utils'
 import CollisionResolver from './collision_resolver'
 import Enemy from './enemy'
 import { RandomMovementBehavior } from './movement_behavior'
-import BoundingRect from './bounding_rect'
+import createBoundingRect from './bounding_rect'
 import Projectile from './projectile'
 import ArrowRenderer from './arrow_renderer'
 import { MetaType } from './meta'
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
     for (let j = map.cols / 4; j < map.cols; j += 2) {
       let x = map.tileSize * j + (map.tileSize / 2)
       let y = map.tileSize * i + (map.tileSize / 2)
-      const enemyFrame = BoundingRect({ x: x, y: y, width: 25, height: 25 })
+      const enemyFrame = createBoundingRect({ x: x, y: y, width: 25, height: 25 })
       const movementBehavior = RandomMovementBehavior({
         frame: enemyFrame,
         targetFrame: hero.frame
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  const arrowFrame = BoundingRect({ x: 0, y: 0, width: 10, height: 10 })
+  const arrowFrame = createBoundingRect({ x: 0, y: 0, width: 10, height: 10 })
   const arrowRenderer = ArrowRenderer({ graphics: graphics, frame: arrowFrame })
   const arrow = Projectile({
     frame: arrowFrame,

@@ -1,4 +1,4 @@
-import BoundingRect from './bounding_rect'
+import createBoundingRect from './bounding_rect'
 import { Meta, MetaType } from './meta'
 
 function Hero(spec) {
@@ -9,7 +9,7 @@ function Hero(spec) {
   const graphics = s.graphics
   const inputController = s.gameInputController
   const meta = s.meta || Meta(s)
-  const frame = s.rect || BoundingRect(s)
+  const frame = s.rect || createBoundingRect(s)
   let speed = s.speed || 0.32
 
   const update = (delta) => {

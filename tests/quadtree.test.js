@@ -1,5 +1,5 @@
 import QuadTree from '../src/app/quadtree'
-import BoundingRect from '../src/app/bounding_rect'
+import createBoundingRect from '../src/app/bounding_rect'
 
 describe('a quadtree', () => {
   let quadtree
@@ -30,7 +30,7 @@ describe('a quadtree', () => {
     const mockItemB = MockItem({ x: 6, y: 6, width: 4, height: 4 })
     quadtree.insert(mockItemB)
 
-    const rect = BoundingRect({ x: 0, y: 0, width: 5, height: 5 })
+    const rect = createBoundingRect({ x: 0, y: 0, width: 5, height: 5 })
     const results = quadtree.query(rect)
     expect(results.length).toBe(1)
     expect(results[0] === mockItemA).toBe(true)
@@ -52,7 +52,7 @@ describe('a quadtree', () => {
     const mockItemE = MockItem({ x: 70, y: 55, width: 4, height: 4 })
     quadtree.insert(mockItemE)
 
-    const rect = BoundingRect({ x: 0, y: 0, width: 25, height: 25 })
+    const rect = createBoundingRect({ x: 0, y: 0, width: 25, height: 25 })
     const results = quadtree.query(rect)
     expect(results.length).toBe(3)
 
@@ -62,7 +62,7 @@ describe('a quadtree', () => {
 })
 
 function MockItem(spec) {
-  let frame = BoundingRect(spec)
+  let frame = createBoundingRect(spec)
   return {
     frame: frame
   }

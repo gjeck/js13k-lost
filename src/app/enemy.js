@@ -1,11 +1,11 @@
-import BoundingRect from './bounding_rect'
+import createBoundingRect from './bounding_rect'
 import { Meta, MetaStatus } from './meta'
 
 function Enemy(spec) {
   const s = spec || {}
   const graphics = s.graphics
   const movementBehavior = s.movementBehavior
-  const frame = s.frame || BoundingRect(s)
+  const frame = s.frame || createBoundingRect(s)
   const meta = s.meta || Meta(s)
 
   const update = (delta) => {
