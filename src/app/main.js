@@ -130,21 +130,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
   emitter.on('RunLoop:render', (interpolationPercentage) => {
     graphics.reset()
+
+    graphics.ctx.save()
     graphics.ctx.fillStyle = 'black'
+    graphics.ctx.globalAlpha = 0.9
     graphics.ctx.fillRect(0, 0, graphics.canvas.width, graphics.canvas.height)
+    graphics.ctx.restore()
 
     camera.begin()
     camera.follow(hero.frame)
-    light.closestIntersection(camera.viewport)
+    light.calculateIntersections(camera.viewport)
+    light.render()
     map.render(camera.viewport)
     arrow.render()
     hero.render()
     enemies.forEach((enemy) => { enemy.render() })
-
-    light.follow(hero.frame)
-
-    graphics.ctx.save()
-
     camera.end()
   })
 

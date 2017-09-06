@@ -19,7 +19,6 @@ function Camera(spec) {
     scale: { x: 0, y: 0 }
   }
   let aspectRatio = s.aspectRatio || 1.0
-  let isFollowing = false
 
   const updateViewport = () => {
     aspectRatio = graphics.canvas.width / graphics.canvas.height
@@ -35,20 +34,12 @@ function Camera(spec) {
 
   const begin = () => {
     graphics.ctx.save()
-    applyScale()
-    applyTranslation()
+    graphics.ctx.scale(viewport.scale.x, viewport.scale.y)
+    graphics.ctx.translate(-viewport.left, -viewport.top)
   }
 
   const end = () => {
     graphics.ctx.restore()
-  }
-
-  const applyScale = () => {
-    graphics.ctx.scale(viewport.scale.x, viewport.scale.y)
-  }
-
-  const applyTranslation = () => {
-    graphics.ctx.translate(-viewport.left, -viewport.top)
   }
 
   const zoomTo = (z) => {
@@ -77,23 +68,16 @@ function Camera(spec) {
   }
 
   const follow = (rect) => {
-    isFollowing = true
     // Clamp the camera position to the world bounds while centering the camera around the follow
     lookat.x = clamp(rect.x, viewport.width / 2, maxX - viewport.width / 2)
     lookat.y = clamp(rect.y, viewport.height / 2, maxY - viewport.height / 2)
     updateViewport()
   }
 
-  const unFollow = () => {
-    isFollowing = false
-  }
-
   updateViewport()
 
   return {
-    isFollowing: isFollowing,
     follow: follow,
-    unFollow: unFollow,
     begin: begin,
     end: end,
     updateViewport: updateViewport,

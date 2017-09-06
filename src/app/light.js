@@ -1,18 +1,9 @@
-import BoundingRect from './bounding_rect'
-import { Meta } from './meta'
-
 function Light(spec) {
   const s = spec || {}
   const target = s.target
   const graphics = s.graphics
   const map = s.map
-  const frame = s.frame || BoundingRect(s)
-  const meta = s.meta || Meta(s)
-
-  const follow = (item) => {
-    frame.x = item.x
-    frame.y = item.y
-  }
+  const intersects = []
 
   const getIntersection = (point, segment) => {
     const rPx = point.x
@@ -50,7 +41,9 @@ function Light(spec) {
     }
   }
 
-  const closestIntersection = (viewport) => {
+  const calculateIntersections = (viewport) => {
+    intersects.splice(0, intersects.length)
+
     let segments = []
     const bounds = map.rowsAndColsInViewport(viewport)
     segments.push({ x1: viewport.left, x2: viewport.right, y1: viewport.top, y2: viewport.top })
@@ -93,7 +86,6 @@ function Light(spec) {
       return angles
     })(uniquePoints)
 
-    let intersects = []
     uniqueAngles.forEach((angle) => {
       const point = {
         x: target.frame.centerX() + Math.cos(angle),
@@ -116,7 +108,9 @@ function Light(spec) {
     intersects.sort((a, b) => {
       return a.angle - b.angle
     })
+  }
 
+  const render = () => {
     graphics.ctx.save()
     graphics.ctx.fillStyle = 'white'
     graphics.ctx.globalAlpha = 1.0
@@ -128,15 +122,14 @@ function Light(spec) {
         graphics.ctx.lineTo(item.x, item.y)
       }
     })
+    graphics.ctx.closePath()
     graphics.ctx.fill()
     graphics.ctx.restore()
   }
 
   return {
-    frame: frame,
-    meta: meta,
-    closestIntersection: closestIntersection,
-    follow: follow
+    calculateIntersections: calculateIntersections,
+    render: render
   }
 }
 
