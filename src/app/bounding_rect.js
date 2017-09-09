@@ -28,6 +28,13 @@ Rect.prototype.intersects = function(other) {
     this.maxY() >= other.y
 }
 
+Rect.prototype.intersectsViewport = function(viewport) {
+  return this.x <= viewport.right &&
+    this.maxX() >= viewport.left &&
+    this.y <= viewport.bottom &&
+    this.maxY() >= viewport.top
+}
+
 Rect.prototype.contains = function(other) {
   return other.maxX() <= this.maxX() &&
     other.x >= this.x &&

@@ -1,7 +1,7 @@
 import Direction from './direction'
 import { randomIntInRange } from './utils'
 
-function RandomMovementBehavior(spec) {
+function createRandomMovementBehavior(spec) {
   const s = spec || {}
   const frame = s.frame
   const targetFrame = s.targetFrame
@@ -62,4 +62,4 @@ function RandomMovementBehavior(spec) {
   }
 }
 
-export { RandomMovementBehavior }
+export { createRandomMovementBehavior }

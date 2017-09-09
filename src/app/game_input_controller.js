@@ -1,4 +1,4 @@
-function GameInputController(spec) {
+function createGameInputController(spec) {
   const s = spec || {}
   const graphics = s.graphics
   const camera = s.camera
@@ -46,7 +46,7 @@ function GameInputController(spec) {
   graphics.canvas.addEventListener('mousedown', (e) => {
     setMousePoint(e.clientX, e.clientY)
     mouse.down = true
-    emitter.emit('GameInputController:mousedown', e)
+    emitter.emit('createGameInputController:mousedown', e)
   })
 
   graphics.canvas.addEventListener('mouseup', (e) => {
@@ -70,4 +70,4 @@ const KeyMapping = Object.freeze({
   right: 'KeyD'
 })
 
-export { GameInputController as default }
+export { createGameInputController as default }

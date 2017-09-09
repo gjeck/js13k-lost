@@ -1,14 +1,14 @@
 import createBoundingRect from './bounding_rect'
-import { Meta, MetaType } from './meta'
+import { createMeta, MetaType } from './meta'
 
-function Hero(spec) {
+function createHero(spec) {
   const s = spec || {}
-  s.width = s.width || 25
-  s.height = s.height || 25
+  s.width = s.width || 27
+  s.height = s.height || 27
   s.type = s.type || MetaType.hero
   const graphics = s.graphics
   const inputController = s.gameInputController
-  const meta = s.meta || Meta(s)
+  const meta = s.meta || createMeta(s)
   const frame = s.rect || createBoundingRect(s)
   let speed = s.speed || 0.32
 
@@ -26,7 +26,10 @@ function Hero(spec) {
   }
 
   const render = () => {
+    graphics.ctx.save()
+    graphics.ctx.fillStyle = 'white'
     graphics.drawCircle(frame.x, frame.y, frame.width / 2)
+    graphics.ctx.restore()
   }
 
   return {
@@ -37,4 +40,4 @@ function Hero(spec) {
   }
 }
 
-export { Hero as default }
+export { createHero as default }

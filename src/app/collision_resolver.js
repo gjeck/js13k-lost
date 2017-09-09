@@ -1,6 +1,6 @@
 import { MetaType, MetaStatus } from './meta'
 
-function CollisionResolver() {
+function createCollisionResolver() {
   const resolve = (entity, collection) => {
     collection.forEach((item) => {
       if (entity === item || item.meta.type === MetaType.none) {
@@ -72,4 +72,4 @@ function CollisionResolver() {
   }
 }
 
-export { CollisionResolver as default }
+export { createCollisionResolver as default }

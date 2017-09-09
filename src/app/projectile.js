@@ -1,12 +1,12 @@
 import createBoundingRect from './bounding_rect'
-import { Meta, MetaStatus } from './meta'
+import { createMeta, MetaStatus } from './meta'
 
-function Projectile(spec) {
+function createProjectile(spec) {
   const s = spec || {}
   const sourceFrame = s.sourceFrame
   const renderer = s.renderer
   const frame = s.frame || createBoundingRect(s)
-  const meta = s.meta || Meta(s)
+  const meta = s.meta || createMeta(s)
   const speed = s.speed || 1.2
   const targetVector = {}
 
@@ -45,4 +45,4 @@ function Projectile(spec) {
   }
 }
 
-export { Projectile as default }
+export { createProjectile as default }
