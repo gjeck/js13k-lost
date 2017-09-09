@@ -120,4 +120,7 @@ function createQuadTree(spec) {
   return new QuadTree(maxItems, depth, bounds)
 }
 
-export { createQuadTree as default }
+export {
+  createQuadTree as default,
+  QuadTree
+}

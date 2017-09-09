@@ -2,10 +2,12 @@ import { shuffle } from './utils'
 import Direction from './direction'
 
 function createMazeGenerator() {
-  const generate = (rows, cols, px, py) => {
-    let x = px || 0
-    let y = py || 0
+  const generate = (rows, cols, px, py, sparseness) => {
+    const x = px || 0
+    const y = py || 0
+    const s = sparseness || 0.09
     const grid = []
+
     for (let i = 0; i < rows; ++i) {
       let cells = []
       for (let j = 0; j < cols; ++j) {
@@ -13,7 +15,17 @@ function createMazeGenerator() {
       }
       grid.push(cells)
     }
+
     carve(x, y, grid)
+
+    for (let i = 1; i < rows - 1; ++i) {
+      for (let j = 1; j < cols - 1; ++j) {
+        if (Math.random() < s) {
+          grid[i][j] = Direction.none
+        }
+      }
+    }
+
     return grid
   }
 
@@ -35,30 +47,8 @@ function createMazeGenerator() {
     })
   }
 
-  const asString = (grid) => {
-    let s = ' '
-    for (let i = 0; i < grid.length * 2 - 1; ++i) {
-      s += '_'
-    }
-    s += '\n'
-    for (let y = 0; y < grid.length; ++y) {
-      s += '|'
-      for (let x = 0; x < grid.length; ++x) {
-        s += ((grid[y][x] & Direction.s) !== 0) ? ' ' : '_'
-        if ((grid[y][x] & Direction.e) !== 0) {
-          s += (((grid[y][x] | grid[y][x + 1]) & Direction.s) !== 0) ? ' ' : '_'
-        } else {
-          s += '|'
-        }
-      }
-      s += '\n'
-    }
-    return s
-  }
-
   return {
-    generate: generate,
-    asString: asString
+    generate: generate
   }
 }
 

@@ -1,10 +1,10 @@
-import QuadTree from '../src/app/quadtree'
+import createQuadTree from '../src/app/quadtree'
 import createBoundingRect from '../src/app/bounding_rect'
 
 describe('a quadtree', () => {
   let quadtree
   beforeEach(() => {
-    quadtree = QuadTree({
+    quadtree = createQuadTree({
       maxItems: 4,
       x: 0,
       y: 0,

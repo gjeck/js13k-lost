@@ -12,7 +12,7 @@ function createMap(spec) {
   const tileSize = s.tileSize || 200
   const exit = s.exit || { row: randomIntInRange(0, rows), col: cols - 1 }
 
-  maze[exit.row][exit.col] = 0
+  maze[exit.row][exit.col] = Direction.none
 
   const wallDimension = () => {
     return Math.ceil(tileSize / 8)
