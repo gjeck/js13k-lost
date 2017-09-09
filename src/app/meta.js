@@ -7,23 +7,26 @@ const MetaType = Object.freeze({
 })
 
 const MetaStatus = Object.freeze({
-  active: 2,
-  visible: 4,
-  invulnerable: 8
+  none: 0,
+  active: 1,
+  visible: 2,
+  invulnerable: 4
 })
+
+function Meta(type, health, damage, status) {
+  this.type = type
+  this.health = health
+  this.damage = damage
+  this.status = status
+}
 
 function createMeta(spec) {
   const s = spec || {}
   const type = s.type || MetaType.none
   let health = s.health || 0
   let damage = s.damage || 0
-  let status = s.status || MetaStatus.active | MetaStatus.visible
-  return {
-    type: type,
-    health: health,
-    damage: damage,
-    status: status
-  }
+  let status = s.status === undefined ? (MetaStatus.active | MetaStatus.visible) : MetaStatus.none
+  return new Meta(type, health, damage, status)
 }
 
 export {

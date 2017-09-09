@@ -14,14 +14,14 @@ import { createRandomMovementBehavior } from './movement_behavior'
 import createBoundingRect from './bounding_rect'
 import createProjectile from './projectile'
 import createArrowRenderer from './arrow_renderer'
-import { MetaType } from './meta'
+import { MetaType, MetaStatus } from './meta'
 import createLight from './light'
 
 document.addEventListener('DOMContentLoaded', function() {
   const canvas = document.getElementById('canvas')
-  const graphics = createGraphics({ canvas: canvas })
-  graphics.ctx.imageSmoothingEnabled = false
   const emitter = new EventEmitter()
+  const graphics = createGraphics({ canvas: canvas, emitter: emitter })
+  graphics.ctx.imageSmoothingEnabled = false
   const runLoop = createRunLoop({ emitter: emitter })
   const mazeGenerator = createMazeGenerator()
   const map = createMap({
@@ -39,13 +39,31 @@ document.addEventListener('DOMContentLoaded', function() {
     camera: camera,
     emitter: emitter
   })
+
+  const heroFrame = createBoundingRect({ x: 20, y: 20, width: 27, height: 27 })
+  const projectiles = []
+  for (let i = 0; i < 5; ++i) {
+    const arrowFrame = createBoundingRect({ x: 0, y: 0, width: 11, height: 11 })
+    const arrowRenderer = createArrowRenderer({ graphics: graphics, frame: arrowFrame })
+    const arrow = createProjectile({
+      frame: arrowFrame,
+      renderer: arrowRenderer,
+      sourceFrame: heroFrame,
+      graphics: graphics,
+      type: MetaType.arrow,
+      status: MetaStatus.none,
+      damage: 1
+    })
+    projectiles.push(arrow)
+  }
+
   const hero = createHero({
     graphics: graphics,
-    x: 20,
-    y: 20,
+    frame: heroFrame,
     health: 100,
     gameInputController: gameInputController,
-    emitter: emitter
+    emitter: emitter,
+    ammunition: [].concat(projectiles)
   })
 
   const enemies = []
@@ -64,32 +82,21 @@ document.addEventListener('DOMContentLoaded', function() {
         frame: enemyFrame,
         movementBehavior: movementBehavior,
         health: 1,
+        damage: 1,
         type: MetaType.enemy
       })
       enemies.push(enemy)
     }
   }
 
-  const arrowFrame = createBoundingRect({ x: 0, y: 0, width: 10, height: 10 })
-  const arrowRenderer = createArrowRenderer({ graphics: graphics, frame: arrowFrame })
-  const arrow = createProjectile({
-    frame: arrowFrame,
-    renderer: arrowRenderer,
-    sourceFrame: hero.frame,
-    graphics: graphics,
-    type: MetaType.arrow,
-    damage: 1
-  })
-
-  const treePadding = map.tileSize
   const quadtree = Quadtree({
-    x: -treePadding,
-    y: -treePadding,
-    width: map.cols * map.tileSize + treePadding * 2,
-    height: map.rows * map.tileSize + treePadding * 2
+    x: -map.tileSize,
+    y: -map.tileSize,
+    width: map.cols * map.tileSize + map.tileSize * 2,
+    height: map.rows * map.tileSize + map.tileSize * 2
   })
 
-  const collisionResolver = createCollisionResolver()
+  const collisionResolver = createCollisionResolver({ emitter: emitter })
 
   const light = createLight({
     x: 0,
@@ -107,12 +114,12 @@ document.addEventListener('DOMContentLoaded', function() {
   emitter.on('RunLoop:update', (delta) => {
     hero.update(delta)
     enemies.forEach((enemy) => { enemy.update(delta) })
-    arrow.update(delta)
+    projectiles.forEach((projectile) => { projectile.update(delta) })
 
     quadtree.insert(hero)
+    projectiles.forEach((projectile) => { quadtree.insert(projectile) })
     enemies.forEach((enemy) => { quadtree.insert(enemy) })
     map.walls.forEach((wall) => { quadtree.insert(wall) })
-    quadtree.insert(arrow)
 
     const results = quadtree.query(hero.frame)
     collisionResolver.resolve(hero, results)
@@ -122,8 +129,10 @@ document.addEventListener('DOMContentLoaded', function() {
       collisionResolver.resolve(enemy, enemyResults)
     })
 
-    const arrowResults = quadtree.query(arrow.frame)
-    collisionResolver.resolve(arrow, arrowResults)
+    projectiles.forEach((projectile) => {
+      const projectileResults = quadtree.query(projectile.frame)
+      collisionResolver.resolve(projectile, projectileResults)
+    })
   })
 
   emitter.on('RunLoop:render', (interpolationPercentage) => {
@@ -131,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function() {
     camera.begin()
     camera.follow(hero.frame)
     enemies.forEach((enemy) => { enemy.render(camera.viewport) })
-    arrow.render()
+    projectiles.forEach((projectile) => { projectile.render() })
     light.calculateIntersections(camera.viewport)
     light.render()
     map.render(camera.viewport)
@@ -141,14 +150,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   emitter.on('RunLoop:end', (fps, panic) => {
     quadtree.removeAll()
-  })
-
-  emitter.on('GameInputController:mousedown', (e) => {
-    // canvas.classList.toggle('shake')
-    // canvas.addEventListener('animationend', () => {
-    //   canvas.classList.toggle('shake')
-    // }, {once: true})
-    arrow.fire(gameInputController.mouse.x, gameInputController.mouse.y)
   })
 
   document.addEventListener('visibilitychange', (e) => {

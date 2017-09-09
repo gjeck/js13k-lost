@@ -54,7 +54,7 @@ function createGameInputController(spec) {
   graphics.canvas.addEventListener('mousedown', (e) => {
     setMousePoint(e.clientX, e.clientY)
     mouse.down = true
-    emitter.emit('GameInputController:mousedown', e)
+    emitter.emit('GameInputController:mousedown', mouse)
   })
 
   graphics.canvas.addEventListener('mouseup', (e) => {
