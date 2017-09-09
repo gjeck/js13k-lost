@@ -3,17 +3,16 @@ import { createMeta, MetaType, MetaStatus } from './meta'
 
 function createHero(spec) {
   const s = spec || {}
-  s.width = s.width || 27
-  s.height = s.height || 27
   s.type = s.type || MetaType.hero
   const graphics = s.graphics
   const inputController = s.gameInputController
   const emitter = s.emitter
   const meta = s.meta || createMeta(s)
-  const frame = s.rect || createBoundingRect(s)
+  const frame = s.frame || createBoundingRect(s)
   const speed = s.speed || 0.32
   const dashResetTimeout = s.dashTimeout || 3000
   const dashTimeout = s.dashLength || 500
+  const ammunition = s.ammunition || []
   let dashResetTimerId = null
   let isDashing = false
   let alphaResetTimerId = null
@@ -32,6 +31,18 @@ function createHero(spec) {
     dashResetTimerId = setTimeout(() => {
       dashResetTimerId = null
     }, dashResetTimeout)
+  })
+
+  emitter.on('GameInputController:mousedown', (mouse) => {
+    if (ammunition.length <= 0) {
+      return
+    }
+    const projectile = ammunition.pop()
+    projectile.fire(mouse.x, mouse.y)
+  })
+
+  emitter.on('CollisionResolver:heroTouchedProjectile', (projectile) => {
+    ammunition.push(projectile)
   })
 
   const getAlpha = () => {
@@ -73,7 +84,8 @@ function createHero(spec) {
     frame: frame,
     update: update,
     render: render,
-    meta: meta
+    meta: meta,
+    ammunition: ammunition
   }
 }
 

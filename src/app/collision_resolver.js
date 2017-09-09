@@ -1,6 +1,9 @@
 import { MetaType, MetaStatus } from './meta'
 
-function createCollisionResolver() {
+function createCollisionResolver(spec) {
+  const s = spec || {}
+  const emitter = s.emitter
+
   const shouldIgnoreResolve = (entityMeta, itemMeta) => {
     return (entityMeta.type === MetaType.hero && itemMeta.type === MetaType.arrow) ||
       (entityMeta.type === MetaType.hero &&
@@ -63,8 +66,9 @@ function createCollisionResolver() {
     if (entity.meta.type === MetaType.arrow && item.meta.type === MetaType.wall) {
       entity.meta.status &= ~MetaStatus.active
     } else if (entity.meta.type === MetaType.arrow && item.meta.type === MetaType.hero) {
-      if ((entity.meta.status & MetaStatus.active) === 0) {
+      if ((entity.meta.status & MetaStatus.active) === 0 && (entity.meta.status & MetaStatus.visible) !== 0) {
         entity.meta.status &= ~MetaStatus.visible
+        emitter.emit('CollisionResolver:heroTouchedProjectile', entity)
       }
     } else if (entity.meta.type === MetaType.arrow && item.meta.type === MetaType.enemy) {
       if ((entity.meta.status & MetaStatus.active) !== 0) {
@@ -73,6 +77,14 @@ function createCollisionResolver() {
       if (item.meta.health <= 0) {
         item.meta.status &= ~MetaStatus.visible
         item.meta.status &= ~MetaStatus.active
+      }
+    } else if (entity.meta.type === MetaType.enemy && item.meta.type === MetaType.hero) {
+      if ((entity.meta.status & MetaStatus.active) !== 0) {
+        item.meta.health -= entity.meta.damage
+        emitter.emit('CollisionResolver:heroTouchedEnemy', entity)
+      }
+      if (item.meta.health <= 0) {
+        emitter.emit('CollisionResolver:heroDied', entity)
       }
     }
   }

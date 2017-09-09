@@ -1,6 +1,7 @@
 function createGraphics(spec) {
   const s = spec || {}
   const canvas = s.canvas
+  const emitter = s.emitter
   const ctx = s.canvas.getContext('2d')
   const initialWidth = canvas.width
   const initialHeight = canvas.height
@@ -44,6 +45,20 @@ function createGraphics(spec) {
   // disable right click
   canvas.addEventListener('contextmenu', function(e) {
     e.preventDefault()
+  })
+
+  emitter.on('CollisionResolver:heroTouchedEnemy', (e) => {
+    if (canvas.classList.contains('animating')) {
+      return
+    }
+    canvas.classList.add('shake')
+    canvas.classList.add('animating')
+    setTimeout(() => {
+      canvas.classList.remove('shake')
+    }, 800)
+    setTimeout(() => {
+      canvas.classList.remove('animating')
+    }, 1200)
   })
 
   resize()
