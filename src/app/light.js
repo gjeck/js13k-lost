@@ -1,4 +1,4 @@
-function Light(spec) {
+function createLight(spec) {
   const s = spec || {}
   const target = s.target
   const graphics = s.graphics
@@ -44,7 +44,7 @@ function Light(spec) {
   const calculateIntersections = (viewport) => {
     intersects.splice(0, intersects.length)
 
-    let segments = []
+    const segments = []
     const bounds = map.rowsAndColsInViewport(viewport)
     segments.push({ x1: viewport.left, x2: viewport.right, y1: viewport.top, y2: viewport.top })
     segments.push({ x1: viewport.left, x2: viewport.left, y1: viewport.top, y2: viewport.bottom })
@@ -59,32 +59,25 @@ function Light(spec) {
       }
     }
 
-    const uniquePoints = (function(lines) {
-      let set = {}
-      let points = []
+    const uniqueAngles = (function(lines) {
+      const set = {}
+      const angles = []
       lines.forEach((line) => {
         const keyA = `${line.x1},${line.y1}`
         const keyB = `${line.x2},${line.y2}`
         if (!set[keyA]) {
           set[keyA] = true
-          points.push({ x: line.x1, y: line.y1 })
+          const angle = Math.atan2(line.y1 - target.frame.centerY(), line.x1 - target.frame.centerX())
+          angles.push(angle - 0.00001, angle, angle + 0.00001)
         }
         if (!set[keyB]) {
           set[keyB] = true
-          points.push({ x: line.x2, y: line.y2 })
+          const angle = Math.atan2(line.y2 - target.frame.centerY(), line.x2 - target.frame.centerX())
+          angles.push(angle - 0.00001, angle, angle + 0.00001)
         }
       })
-      return points
-    })(segments)
-
-    const uniqueAngles = (function(points) {
-      let angles = []
-      points.forEach((point) => {
-        const angle = Math.atan2(point.y - target.frame.centerY(), point.x - target.frame.centerX())
-        angles.push(angle - 0.00001, angle, angle + 0.00001)
-      })
       return angles
-    })(uniquePoints)
+    })(segments)
 
     uniqueAngles.forEach((angle) => {
       const point = {
@@ -112,7 +105,8 @@ function Light(spec) {
 
   const render = () => {
     graphics.ctx.save()
-    graphics.ctx.fillStyle = 'white'
+    graphics.ctx.fillStyle = '#FCD422'
+    graphics.ctx.globalCompositeOperation = 'destination-atop'
     graphics.ctx.globalAlpha = 1.0
     graphics.ctx.beginPath()
     intersects.forEach((item, index) => {
@@ -133,4 +127,4 @@ function Light(spec) {
   }
 }
 
-export { Light as default }
+export { createLight as default }

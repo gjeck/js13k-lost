@@ -11,7 +11,7 @@ const MetaStatus = Object.freeze({
   visible: 2
 })
 
-function Meta(spec) {
+function createMeta(spec) {
   const s = spec || {}
   const type = s.type || MetaType.none
   let health = s.health || 0
@@ -26,7 +26,7 @@ function Meta(spec) {
 }
 
 export {
-  Meta,
+  createMeta,
   MetaType,
   MetaStatus
 }

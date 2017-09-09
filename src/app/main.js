@@ -1,47 +1,45 @@
-import RunLoop from './run_loop'
+import createRunLoop from './run_loop'
 import EventEmitter from 'events'
-import Graphics from './graphics'
-import GameInputController from './game_input_controller'
-import Hero from './hero'
-import Camera from './camera'
-import Map from './map'
-import DevStats from './dev_stats'
-import MazeGenerator from './maze'
+import createGraphics from './graphics'
+import createGameInputController from './game_input_controller'
+import createHero from './hero'
+import createCamera from './camera'
+import createMap from './map'
+import createMazeGenerator from './maze'
 import Quadtree from './quadtree'
 import { randomIntInRange } from './utils'
-import CollisionResolver from './collision_resolver'
-import Enemy from './enemy'
-import { RandomMovementBehavior } from './movement_behavior'
+import createCollisionResolver from './collision_resolver'
+import createEnemy from './enemy'
+import { createRandomMovementBehavior } from './movement_behavior'
 import createBoundingRect from './bounding_rect'
-import Projectile from './projectile'
-import ArrowRenderer from './arrow_renderer'
+import createProjectile from './projectile'
+import createArrowRenderer from './arrow_renderer'
 import { MetaType } from './meta'
-import Light from './light'
+import createLight from './light'
 
 document.addEventListener('DOMContentLoaded', function() {
   const canvas = document.getElementById('canvas')
-  const graphics = Graphics({ canvas: canvas })
+  const graphics = createGraphics({ canvas: canvas })
   graphics.ctx.imageSmoothingEnabled = false
   const emitter = new EventEmitter()
-  const runLoop = RunLoop({ emitter: emitter })
-  const devStats = DevStats({ elem: document.getElementById('devStats') })
-  const mazeGenerator = MazeGenerator()
-  const map = Map({
+  const runLoop = createRunLoop({ emitter: emitter })
+  const mazeGenerator = createMazeGenerator()
+  const map = createMap({
     graphics: graphics,
     maze: mazeGenerator.generate(20, 20, randomIntInRange(20), randomIntInRange(20))
   })
-  const camera = Camera({
+  const camera = createCamera({
     graphics: graphics,
     maxX: map.cols * map.tileSize + map.wallDimension(),
     maxY: map.rows * map.tileSize + map.wallDimension(),
     viewportOffset: map.wallDimension() / 2
   })
-  const gameInputController = GameInputController({
+  const gameInputController = createGameInputController({
     graphics: graphics,
     camera: camera,
     emitter: emitter
   })
-  const hero = Hero({
+  const hero = createHero({
     graphics: graphics,
     x: 20,
     y: 20,
@@ -51,16 +49,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
   const enemies = []
   for (let i = map.rows / 4; i < map.rows; i += 2) {
-    for (let j = map.cols / 4; j < map.cols; j += 2) {
+    for (let j = map.cols / 4; j < map.cols; j += 4) {
       let x = map.tileSize * j + (map.tileSize / 2)
       let y = map.tileSize * i + (map.tileSize / 2)
       const enemyFrame = createBoundingRect({ x: x, y: y, width: 25, height: 25 })
-      const movementBehavior = RandomMovementBehavior({
+      const movementBehavior = createRandomMovementBehavior({
         frame: enemyFrame,
         targetFrame: hero.frame
       })
 
-      const enemy = Enemy({
+      const enemy = createEnemy({
         graphics: graphics,
         frame: enemyFrame,
         movementBehavior: movementBehavior,
@@ -72,8 +70,8 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   const arrowFrame = createBoundingRect({ x: 0, y: 0, width: 10, height: 10 })
-  const arrowRenderer = ArrowRenderer({ graphics: graphics, frame: arrowFrame })
-  const arrow = Projectile({
+  const arrowRenderer = createArrowRenderer({ graphics: graphics, frame: arrowFrame })
+  const arrow = createProjectile({
     frame: arrowFrame,
     renderer: arrowRenderer,
     sourceFrame: hero.frame,
@@ -90,9 +88,9 @@ document.addEventListener('DOMContentLoaded', function() {
     height: map.rows * map.tileSize + treePadding * 2
   })
 
-  const collisionResolver = CollisionResolver()
+  const collisionResolver = createCollisionResolver()
 
-  const light = Light({
+  const light = createLight({
     x: 0,
     y: 0,
     width: canvas.width,
@@ -103,7 +101,6 @@ document.addEventListener('DOMContentLoaded', function() {
   })
 
   emitter.on('RunLoop:begin', (timeStamp, frameDelta) => {
-    devStats.tick()
   })
 
   emitter.on('RunLoop:update', (delta) => {
@@ -130,32 +127,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
   emitter.on('RunLoop:render', (interpolationPercentage) => {
     graphics.reset()
-
-    graphics.ctx.save()
-    graphics.ctx.fillStyle = 'black'
-    graphics.ctx.globalAlpha = 0.9
-    graphics.ctx.fillRect(0, 0, graphics.canvas.width, graphics.canvas.height)
-    graphics.ctx.restore()
-
     camera.begin()
     camera.follow(hero.frame)
+    enemies.forEach((enemy) => { enemy.render(camera.viewport) })
+    arrow.render()
     light.calculateIntersections(camera.viewport)
     light.render()
     map.render(camera.viewport)
-    arrow.render()
     hero.render()
-    enemies.forEach((enemy) => { enemy.render() })
     camera.end()
   })
 
   emitter.on('RunLoop:end', (fps, panic) => {
-    devStats.render(fps, panic)
-
     quadtree.removeAll()
-    devStats.tock()
   })
 
-  emitter.on('GameInputController:mousedown', (e) => {
+  emitter.on('createGameInputController:mousedown', (e) => {
     // canvas.classList.toggle('shake')
     // canvas.addEventListener('animationend', () => {
     //   canvas.classList.toggle('shake')

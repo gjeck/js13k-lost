@@ -1,6 +1,6 @@
 import createBoundingRect from './bounding_rect'
 
-function QuadTree(spec) {
+function createQuadTree(spec) {
   const s = spec || {}
   const maxItems = s.maxItems || 30
   const depth = s.depth || 0
@@ -22,7 +22,7 @@ function QuadTree(spec) {
     const x = bounds.x
     const y = bounds.y
 
-    const northEastTree = QuadTree({
+    const northEastTree = createQuadTree({
       depth: depth + 1,
       x: x + newWidth,
       y: y,
@@ -30,7 +30,7 @@ function QuadTree(spec) {
       height: newHeight
     })
     nodes.push(northEastTree)
-    const northWestTree = QuadTree({
+    const northWestTree = createQuadTree({
       depth: depth + 1,
       x: x,
       y: y,
@@ -38,7 +38,7 @@ function QuadTree(spec) {
       height: newHeight
     })
     nodes.push(northWestTree)
-    const southWestTree = QuadTree({
+    const southWestTree = createQuadTree({
       depth: depth + 1,
       x: x,
       y: y + newHeight,
@@ -46,7 +46,7 @@ function QuadTree(spec) {
       height: newHeight
     })
     nodes.push(southWestTree)
-    const southEastTree = QuadTree({
+    const southEastTree = createQuadTree({
       depth: depth + 1,
       x: x + newWidth,
       y: y + newHeight,
@@ -122,4 +122,4 @@ function QuadTree(spec) {
   }
 }
 
-export { QuadTree as default }
+export { createQuadTree as default }

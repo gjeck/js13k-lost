@@ -1,9 +1,9 @@
-function ArrowRenderer(spec) {
+function createArrowRenderer(spec) {
   const s = spec || {}
   const graphics = s.graphics
   const frame = s.frame
   const arrowLength = s.arrowLength || 17
-  const arrowThickness = s.arrowThickness || 8
+  const arrowThickness = s.arrowThickness || 7
 
   const render = (angle) => {
     graphics.ctx.save()
@@ -19,6 +19,7 @@ function ArrowRenderer(spec) {
     graphics.ctx.moveTo(0, -y)
     graphics.ctx.lineTo(0, y)
     graphics.ctx.lineTo(frame.width, 0)
+    graphics.ctx.fillStyle = '#0D0049'
     graphics.ctx.fill()
     graphics.ctx.restore()
   }
@@ -28,4 +29,4 @@ function ArrowRenderer(spec) {
   }
 }
 
-export { ArrowRenderer as default }
+export { createArrowRenderer as default }

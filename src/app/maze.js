@@ -1,7 +1,7 @@
 import { shuffle } from './utils'
 import Direction from './direction'
 
-function MazeGenerator() {
+function createMazeGenerator() {
   const generate = (rows, cols, px, py) => {
     let x = px || 0
     let y = py || 0
@@ -62,4 +62,4 @@ function MazeGenerator() {
   }
 }
 
-export { MazeGenerator as default }
+export { createMazeGenerator as default }

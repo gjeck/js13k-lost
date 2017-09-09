@@ -1,9 +1,9 @@
 import Direction from './direction'
 import createBoundingRect from './bounding_rect'
 import { randomIntInRange } from './utils'
-import { Meta, MetaType } from './meta'
+import { createMeta, MetaType } from './meta'
 
-function Map(spec) {
+function createMap(spec) {
   const s = spec || {}
   const graphics = s.graphics
   const maze = s.maze
@@ -129,7 +129,7 @@ function Map(spec) {
 
   const drawTile = (row, col) => {
     graphics.ctx.save()
-    graphics.ctx.fillStyle = 'black'
+    graphics.ctx.fillStyle = '#0D0049'
     const rects = tileRectCache[`${row},${col}`]
     rects.forEach((rect) => {
       graphics.drawRect(rect.x, rect.y, rect.width, rect.height)
@@ -153,7 +153,7 @@ function Wall(spec) {
   const s = spec || {}
   s.type = s.type || MetaType.wall
   const frame = createBoundingRect(s)
-  const meta = Meta(s)
+  const meta = createMeta(s)
 
   return {
     frame: frame,
@@ -161,4 +161,4 @@ function Wall(spec) {
   }
 }
 
-export { Map as default }
+export { createMap as default }

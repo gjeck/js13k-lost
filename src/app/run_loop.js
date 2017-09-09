@@ -1,4 +1,4 @@
-function RunLoop(spec) {
+function createRunLoop(spec) {
   const s = spec || {}
   const emitter = s.emitter
   let simulationTimestep = s.simulationTimestep || (1000 / 60)
@@ -96,4 +96,4 @@ function RunLoop(spec) {
   }
 }
 
-export { RunLoop as default }
+export { createRunLoop as default }

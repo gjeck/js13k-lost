@@ -1,4 +1,4 @@
-function Graphics(spec) {
+function createGraphics(spec) {
   const s = spec || {}
   const canvas = s.canvas
   const ctx = s.canvas.getContext('2d')
@@ -60,4 +60,4 @@ function Graphics(spec) {
   }
 }
 
-export { Graphics as default }
+export { createGraphics as default }
