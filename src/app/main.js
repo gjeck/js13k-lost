@@ -44,7 +44,8 @@ document.addEventListener('DOMContentLoaded', function() {
     x: 20,
     y: 20,
     health: 100,
-    gameInputController: gameInputController
+    gameInputController: gameInputController,
+    emitter: emitter
   })
 
   const enemies = []
@@ -142,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function() {
     quadtree.removeAll()
   })
 
-  emitter.on('createGameInputController:mousedown', (e) => {
+  emitter.on('GameInputController:mousedown', (e) => {
     // canvas.classList.toggle('shake')
     // canvas.addEventListener('animationend', () => {
     //   canvas.classList.toggle('shake')

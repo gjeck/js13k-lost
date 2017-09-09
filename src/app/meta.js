@@ -7,8 +7,9 @@ const MetaType = Object.freeze({
 })
 
 const MetaStatus = Object.freeze({
-  active: 1,
-  visible: 2
+  active: 2,
+  visible: 4,
+  invulnerable: 8
 })
 
 function createMeta(spec) {

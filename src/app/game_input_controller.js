@@ -31,12 +31,20 @@ function createGameInputController(spec) {
     return keyboard[KeyMapping.down] || false
   }
 
+  const isDash = () => {
+    return keyboard[KeyMapping.dash] || false
+  }
+
   docWindow.addEventListener('keyup', (e) => {
     keyboard[e.code] = false
   })
 
   docWindow.addEventListener('keydown', (e) => {
     keyboard[e.code] = true
+    if (e.code === KeyMapping.dash && e.target === graphics.canvas) {
+      e.preventDefault()
+    }
+    emitter.emit('GameInputController:keydown', e)
   })
 
   graphics.canvas.addEventListener('mousemove', (e) => {
@@ -46,7 +54,7 @@ function createGameInputController(spec) {
   graphics.canvas.addEventListener('mousedown', (e) => {
     setMousePoint(e.clientX, e.clientY)
     mouse.down = true
-    emitter.emit('createGameInputController:mousedown', e)
+    emitter.emit('GameInputController:mousedown', e)
   })
 
   graphics.canvas.addEventListener('mouseup', (e) => {
@@ -59,6 +67,7 @@ function createGameInputController(spec) {
     isLeft: isLeft,
     isDown: isDown,
     isRight: isRight,
+    isDash: isDash,
     mouse: mouse
   }
 }
@@ -67,7 +76,8 @@ const KeyMapping = Object.freeze({
   up: 'KeyW',
   left: 'KeyA',
   down: 'KeyS',
-  right: 'KeyD'
+  right: 'KeyD',
+  dash: 'Space'
 })
 
 export { createGameInputController as default }

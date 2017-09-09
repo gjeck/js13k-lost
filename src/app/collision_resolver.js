@@ -1,14 +1,24 @@
 import { MetaType, MetaStatus } from './meta'
 
 function createCollisionResolver() {
+  const shouldIgnoreResolve = (entityMeta, itemMeta) => {
+    return (entityMeta.type === MetaType.hero && itemMeta.type === MetaType.arrow) ||
+      (entityMeta.type === MetaType.hero &&
+        itemMeta.type === MetaType.enemy &&
+        (entityMeta.status & MetaStatus.invulnerable) !== 0) ||
+      (entityMeta.type === MetaType.enemy &&
+        itemMeta.type === MetaType.hero &&
+        (itemMeta.status & MetaStatus.invulnerable) !== 0) ||
+      (itemMeta.status & MetaStatus.active) === 0 ||
+      (entityMeta.status & MetaStatus.active) === 0
+  }
+
   const resolve = (entity, collection) => {
     collection.forEach((item) => {
       if (entity === item || item.meta.type === MetaType.none) {
         return
       }
-      const ignoreResolve = (entity.meta.type === MetaType.hero && item.meta.type === MetaType.arrow) ||
-        (item.meta.status & MetaStatus.active) === 0 ||
-        (entity.meta.status & MetaStatus.active) === 0
+      const ignoreResolve = shouldIgnoreResolve(entity.meta, item.meta)
       const bottomCollision = entity.frame.maxY() - item.frame.y
       const topCollision = item.frame.maxY() - entity.frame.y
       const leftCollision = item.frame.maxX() - entity.frame.x

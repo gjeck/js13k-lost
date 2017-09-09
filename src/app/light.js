@@ -16,8 +16,6 @@ function createLight(spec) {
     const sDx = segment.x2 - segment.x1
     const sDy = segment.y2 - segment.y1
 
-    const epsilon = 0.0001
-
     if (rDx * sDy === rDy * sDx) { // parallel
       return null
     }
@@ -28,7 +26,7 @@ function createLight(spec) {
     }
 
     const t2 = (rDx * (sPy - rPy) + rDy * (rPx - sPx)) / denom
-    const t1 = rDx < epsilon ? (sPy + sDy * t2 - rPy) / rDy : (sPx + sDx * t2 - rPx) / rDx
+    const t1 = rDx === 0 ? (sPy + sDy * t2 - rPy) / rDy : (sPx + sDx * t2 - rPx) / rDx
 
     if (t1 < 0 || t2 < 0 || t2 > 1) {
       return null
