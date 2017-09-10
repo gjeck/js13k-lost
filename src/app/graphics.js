@@ -38,6 +38,22 @@ function createGraphics(spec) {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
   }
 
+  const fadeOut = (callback) => {
+    canvas.classList.toggle('hide')
+    setTimeout(() => {
+      canvas.classList.toggle('hide')
+      if (callback) callback()
+    }, 350)
+  }
+
+  const fadeIn = (callback) => {
+    canvas.classList.toggle('show')
+    setTimeout(() => {
+      canvas.classList.toggle('show')
+      if (callback) callback()
+    }, 350)
+  }
+
   canvas.addEventListener('click', function() {
     this.focus()
   })
@@ -64,6 +80,8 @@ function createGraphics(spec) {
   resize()
   containerWindow.addEventListener('resize', resize)
 
+  ctx.imageSmoothingEnabled = false
+
   return {
     canvas: canvas,
     ctx: ctx,
@@ -71,7 +89,9 @@ function createGraphics(spec) {
     ratio: ratio,
     drawCircle: drawCircle,
     drawRect: drawRect,
-    reset: reset
+    reset: reset,
+    fadeOut: fadeOut,
+    fadeIn: fadeIn
   }
 }
 
