@@ -18,6 +18,7 @@ import createLevel from './level'
 function createLevelFactory(spec) {
   const emitter = spec.emitter
   const graphics = spec.graphics
+  const soundController = spec.soundController
 
   const makeLevel = (levelCount) => {
     const mazeGenerator = createMazeGenerator()
@@ -108,6 +109,7 @@ function createLevelFactory(spec) {
     return createLevel({
       emitter: emitter,
       gameInputController: gameInputController,
+      soundController: soundController,
       hero: hero,
       enemies: enemies,
       projectiles: projectiles,

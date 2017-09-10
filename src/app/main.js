@@ -3,13 +3,19 @@ import EventEmitter from 'events'
 import createGraphics from './graphics'
 import createGame from './game'
 import createLevelFactory from './level_factory'
+import createSoundController from './sound_controller'
 
 document.addEventListener('DOMContentLoaded', function() {
   const canvas = document.getElementById('canvas')
   const emitter = new EventEmitter()
   const graphics = createGraphics({ canvas: canvas, emitter: emitter })
+  const soundController = createSoundController({ emitter: emitter })
   const runLoop = createRunLoop({ emitter: emitter })
-  const levelFactory = createLevelFactory({ emitter: emitter, graphics: graphics })
+  const levelFactory = createLevelFactory({
+    emitter: emitter,
+    graphics: graphics,
+    soundController: soundController
+  })
   const game = createGame({ emitter: emitter, levelFactory: levelFactory })
 
   emitter.on('RunLoop:begin', (timeStamp, frameDelta) => {

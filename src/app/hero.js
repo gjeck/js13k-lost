@@ -18,33 +18,6 @@ function createHero(spec) {
   let alphaResetTimerId = null
   let alpha = 1.0
 
-  emitter.on('GameInputController:keydown', (e) => {
-    if (dashResetTimerId || !inputController.isDash()) {
-      return
-    }
-    meta.status |= MetaStatus.invulnerable
-    isDashing = true
-    setTimeout(() => {
-      isDashing = false
-      meta.status &= ~MetaStatus.invulnerable
-    }, dashTimeout)
-    dashResetTimerId = setTimeout(() => {
-      dashResetTimerId = null
-    }, dashResetTimeout)
-  })
-
-  emitter.on('GameInputController:mousedown', (mouse) => {
-    if (ammunition.length <= 0) {
-      return
-    }
-    const projectile = ammunition.pop()
-    projectile.fire(mouse.x, mouse.y)
-  })
-
-  emitter.on('CollisionResolver:heroTouchedProjectile', (projectile) => {
-    ammunition.push(projectile)
-  })
-
   const getAlpha = () => {
     if (isDashing && !alphaResetTimerId) {
       alpha = 0.1
@@ -80,12 +53,52 @@ function createHero(spec) {
     graphics.ctx.restore()
   }
 
+  const onKeyDown = (e) => {
+    if (dashResetTimerId || !inputController.isDash()) {
+      return
+    }
+    meta.status |= MetaStatus.invulnerable
+    isDashing = true
+    emitter.emit('Hero:isDashing')
+    setTimeout(() => {
+      isDashing = false
+      meta.status &= ~MetaStatus.invulnerable
+    }, dashTimeout)
+    dashResetTimerId = setTimeout(() => {
+      dashResetTimerId = null
+    }, dashResetTimeout)
+  }
+
+  const onMouseDown = (mouse) => {
+    emitter.emit('Hero:onMouseDown', ammunition)
+    if (ammunition.length <= 0) {
+      return
+    }
+    const projectile = ammunition.pop()
+    projectile.fire(mouse.x, mouse.y)
+  }
+
+  const onTouchProjectile = (projectile) => {
+    ammunition.push(projectile)
+  }
+
+  const unregisterListeners = () => {
+    emitter.removeListener('GameInputController:keydown', onKeyDown)
+    emitter.removeListener('GameInputController:mousedown', onMouseDown)
+    emitter.removeListener('CollisionResolver:heroTouchedProjectile', onTouchProjectile)
+  }
+
+  emitter.on('GameInputController:keydown', onKeyDown)
+  emitter.on('GameInputController:mousedown', onMouseDown)
+  emitter.on('CollisionResolver:heroTouchedProjectile', onTouchProjectile)
+
   return {
     frame: frame,
     update: update,
     render: render,
     meta: meta,
-    ammunition: ammunition
+    ammunition: ammunition,
+    unregisterListeners: unregisterListeners
   }
 }
 
