@@ -6,14 +6,25 @@ html, body {
 }
 
 body {
-  background-color: gray;
+  background-color: #030012;
+  overflow: hidden;
 }
 
 canvas {
   outline: none;
   margin: 0 auto;
   display: block;
-  background-color: rgba(13, 0, 73, 0.85);
+  background-color: rgba(30, 19, 81, 1);
+}
+
+.show {
+  opacity: 1;
+  transition: opacity 0.35s ease-in-out;
+}
+
+.hide {
+  opacity: 0;
+  transition: opacity 0.35s ease-in-out;
 }
 
 .shake {

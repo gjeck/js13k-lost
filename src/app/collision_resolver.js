@@ -79,7 +79,7 @@ function createCollisionResolver(spec) {
         item.meta.status &= ~MetaStatus.active
       }
     } else if (entity.meta.type === MetaType.enemy && item.meta.type === MetaType.hero) {
-      if ((entity.meta.status & MetaStatus.active) !== 0) {
+      if ((entity.meta.status & MetaStatus.active) !== 0 && (item.meta.status & MetaStatus.invulnerable) === 0) {
         item.meta.health -= entity.meta.damage
         emitter.emit('CollisionResolver:heroTouchedEnemy', entity)
       }

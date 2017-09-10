@@ -6,6 +6,7 @@ function createGameInputController(spec) {
   const docWindow = s.docWindow || window
   const keyboard = {}
   const mouse = {}
+  let paused = false
 
   const setMousePoint = (x, y) => {
     mouse.x = x - graphics.canvas.offsetLeft
@@ -35,6 +36,10 @@ function createGameInputController(spec) {
     return keyboard[KeyMapping.dash] || false
   }
 
+  const isPaused = () => {
+    return paused
+  }
+
   docWindow.addEventListener('keyup', (e) => {
     keyboard[e.code] = false
   })
@@ -44,7 +49,12 @@ function createGameInputController(spec) {
     if (e.code === KeyMapping.dash && e.target === graphics.canvas) {
       e.preventDefault()
     }
-    emitter.emit('GameInputController:keydown', e)
+    if (e.code === KeyMapping.paused) {
+      paused = !paused
+    }
+    if (!isPaused()) {
+      emitter.emit('GameInputController:keydown', e)
+    }
   })
 
   graphics.canvas.addEventListener('mousemove', (e) => {
@@ -54,7 +64,9 @@ function createGameInputController(spec) {
   graphics.canvas.addEventListener('mousedown', (e) => {
     setMousePoint(e.clientX, e.clientY)
     mouse.down = true
-    emitter.emit('GameInputController:mousedown', mouse)
+    if (!isPaused()) {
+      emitter.emit('GameInputController:mousedown', mouse)
+    }
   })
 
   graphics.canvas.addEventListener('mouseup', (e) => {
@@ -68,6 +80,7 @@ function createGameInputController(spec) {
     isDown: isDown,
     isRight: isRight,
     isDash: isDash,
+    isPaused: isPaused,
     mouse: mouse
   }
 }
@@ -77,7 +90,11 @@ const KeyMapping = Object.freeze({
   left: 'KeyA',
   down: 'KeyS',
   right: 'KeyD',
+  paused: 'KeyP',
   dash: 'Space'
 })
 
-export { createGameInputController as default }
+export {
+  createGameInputController as default,
+  KeyMapping
+}
