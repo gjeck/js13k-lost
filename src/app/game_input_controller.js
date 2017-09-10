@@ -40,11 +40,11 @@ function createGameInputController(spec) {
     return paused
   }
 
-  docWindow.addEventListener('keyup', (e) => {
+  const onKeyUp = (e) => {
     keyboard[e.code] = false
-  })
+  }
 
-  docWindow.addEventListener('keydown', (e) => {
+  const onKeyDown = (e) => {
     keyboard[e.code] = true
     if (e.code === KeyMapping.dash && e.target === graphics.canvas) {
       e.preventDefault()
@@ -55,24 +55,38 @@ function createGameInputController(spec) {
     if (!isPaused()) {
       emitter.emit('GameInputController:keydown', e)
     }
-  })
+  }
 
-  graphics.canvas.addEventListener('mousemove', (e) => {
+  const onMouseMove = (e) => {
     setMousePoint(e.clientX, e.clientY)
-  })
+  }
 
-  graphics.canvas.addEventListener('mousedown', (e) => {
+  const onMouseDown = (e) => {
     setMousePoint(e.clientX, e.clientY)
     mouse.down = true
     if (!isPaused()) {
       emitter.emit('GameInputController:mousedown', mouse)
     }
-  })
+  }
 
-  graphics.canvas.addEventListener('mouseup', (e) => {
+  const onMouseUp = (e) => {
     setMousePoint(e.clientX, e.clientY)
     mouse.down = false
-  })
+  }
+
+  const unregisterListeners = () => {
+    docWindow.removeEventListener('keyup', onKeyUp)
+    docWindow.removeEventListener('keydown', onKeyDown)
+    graphics.canvas.removeEventListener('mousemove', onMouseMove)
+    graphics.canvas.removeEventListener('mousedown', onMouseDown)
+    graphics.canvas.removeEventListener('mouseup', onMouseUp)
+  }
+
+  docWindow.addEventListener('keyup', onKeyUp)
+  docWindow.addEventListener('keydown', onKeyDown)
+  graphics.canvas.addEventListener('mousemove', onMouseMove)
+  graphics.canvas.addEventListener('mousedown', onMouseDown)
+  graphics.canvas.addEventListener('mouseup', onMouseUp)
 
   return {
     isUp: isUp,
@@ -81,7 +95,8 @@ function createGameInputController(spec) {
     isRight: isRight,
     isDash: isDash,
     isPaused: isPaused,
-    mouse: mouse
+    mouse: mouse,
+    unregisterListeners: unregisterListeners
   }
 }
 

@@ -67,6 +67,8 @@ function createLevel(spec) {
 
   const complete = (callback) => {
     graphics.fadeOut(callback)
+    gameInputController.unregisterListeners()
+    hero.unregisterListeners()
   }
 
   return {
