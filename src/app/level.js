@@ -30,8 +30,8 @@ function createLevel(spec) {
     enemies.forEach((enemy) => { quadtree.insert(enemy) })
     map.walls.forEach((wall) => { quadtree.insert(wall) })
 
-    const results = quadtree.query(hero.frame)
-    collisionResolver.resolve(hero, results)
+    const heroResults = quadtree.query(hero.frame)
+    collisionResolver.resolve(hero, heroResults)
 
     enemies.forEach((enemy) => {
       const enemyResults = quadtree.query(enemy.frame)

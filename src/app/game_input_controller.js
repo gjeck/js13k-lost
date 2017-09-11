@@ -3,10 +3,11 @@ function createGameInputController(spec) {
   const graphics = s.graphics
   const camera = s.camera
   const emitter = s.emitter
+  const soundController = s.soundController
   const docWindow = s.docWindow || window
   const keyboard = {}
   const mouse = {}
-  let paused = false
+  let paused = true
 
   const setMousePoint = (x, y) => {
     mouse.x = x - graphics.canvas.offsetLeft
@@ -49,12 +50,21 @@ function createGameInputController(spec) {
     if (e.code === KeyMapping.dash && e.target === graphics.canvas) {
       e.preventDefault()
     }
-    if (e.code === KeyMapping.paused) {
+    if (e.code === KeyMapping.pause) {
       paused = !paused
+      const event = new Event('GameInputController:gamePauseToggled')
+      docWindow.dispatchEvent(event)
     }
     if (!isPaused()) {
       emitter.emit('GameInputController:keydown', e)
     }
+    if (e.code === KeyMapping.mute) {
+      soundController.muted = !soundController.muted
+    }
+  }
+
+  const onMenuPlay = () => {
+    paused = !paused
   }
 
   const onMouseMove = (e) => {
@@ -77,6 +87,7 @@ function createGameInputController(spec) {
   const unregisterListeners = () => {
     docWindow.removeEventListener('keyup', onKeyUp)
     docWindow.removeEventListener('keydown', onKeyDown)
+    docWindow.removeEventListener('Menu:playButtonPressed', onMenuPlay)
     graphics.canvas.removeEventListener('mousemove', onMouseMove)
     graphics.canvas.removeEventListener('mousedown', onMouseDown)
     graphics.canvas.removeEventListener('mouseup', onMouseUp)
@@ -84,6 +95,7 @@ function createGameInputController(spec) {
 
   docWindow.addEventListener('keyup', onKeyUp)
   docWindow.addEventListener('keydown', onKeyDown)
+  docWindow.addEventListener('Menu:playButtonPressed', onMenuPlay)
   graphics.canvas.addEventListener('mousemove', onMouseMove)
   graphics.canvas.addEventListener('mousedown', onMouseDown)
   graphics.canvas.addEventListener('mouseup', onMouseUp)
@@ -105,7 +117,8 @@ const KeyMapping = Object.freeze({
   left: 'KeyA',
   down: 'KeyS',
   right: 'KeyD',
-  paused: 'KeyP',
+  pause: 'KeyP',
+  mute: 'KeyM',
   dash: 'Space'
 })
 
