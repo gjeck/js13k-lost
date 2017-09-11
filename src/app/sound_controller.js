@@ -3,42 +3,48 @@
 import jsfxr from 'jsfxr'
 import { randomIntInRange } from './utils'
 
-function createSoundController(spec) {
-  const emitter = spec.emitter
+function SoundController(muted) {
+  this.muted = muted
+}
 
-  const play = (sound) => {
-    const player = new Audio()
-    player.src = sound
-    player.play()
+SoundController.prototype.play = function(sound) {
+  if (this.muted) {
+    return
   }
+  const player = new Audio()
+  player.src = sound
+  player.play()
+}
+
+function createSoundController(spec) {
+  const soundController = new SoundController(false)
+  const emitter = spec.emitter
 
   emitter.on('Hero:onMouseDown', (ammunition) => {
     if (ammunition.length) {
-      play(Sounds.hero.fire[randomIntInRange(0, Sounds.hero.fire.length)])
+      soundController.play(Sounds.hero.fire[randomIntInRange(0, Sounds.hero.fire.length)])
     } else {
-      play(Sounds.hero.fireEmpty[randomIntInRange(0, Sounds.hero.fireEmpty.length)])
+      soundController.play(Sounds.hero.fireEmpty[randomIntInRange(0, Sounds.hero.fireEmpty.length)])
     }
   })
 
   emitter.on('Hero:isDashing', () => {
-    play(Sounds.hero.dash[randomIntInRange(0, Sounds.hero.dash.length)])
+    soundController.play(Sounds.hero.dash[randomIntInRange(0, Sounds.hero.dash.length)])
   })
 
   emitter.on('CollisionResolver:heroTouchedProjectile', () => {
-    play(Sounds.hero.pickup[randomIntInRange(0, Sounds.hero.pickup.length)])
+    soundController.play(Sounds.hero.pickup[randomIntInRange(0, Sounds.hero.pickup.length)])
   })
 
   emitter.on('CollisionResolver:heroTouchedEnemy', () => {
-    play(Sounds.hero.hurt[randomIntInRange(0, Sounds.hero.hurt.length)])
+    soundController.play(Sounds.hero.hurt[randomIntInRange(0, Sounds.hero.hurt.length)])
   })
 
   emitter.on('CollisionResolver:enemyDied', () => {
-    play(Sounds.enemy.died[randomIntInRange(0, Sounds.enemy.died.length)])
+    soundController.play(Sounds.enemy.died[randomIntInRange(0, Sounds.enemy.died.length)])
   })
 
-  return {
-    play: play
-  }
+  return soundController
 }
 
 const Sounds = Object.freeze({

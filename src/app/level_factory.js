@@ -35,7 +35,8 @@ function createLevelFactory(spec) {
     const gameInputController = createGameInputController({
       graphics: graphics,
       camera: camera,
-      emitter: emitter
+      emitter: emitter,
+      soundController: soundController
     })
 
     const heroFrame = createBoundingRect({ x: 20, y: 20, width: 27, height: 27 })

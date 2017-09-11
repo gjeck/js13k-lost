@@ -4,10 +4,38 @@
   <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mazeren</title>
   </head>
 
   <body>
-    <canvas id="canvas" width="1920" height="1080" tabindex="1"></canvas>
+    <main id="main-menu" class="menu-container fixed-container">
+      <div class="absolute-centered-container fade-in">
+        <h1>Mazeren</h1>
+        <ul>
+          <li>
+            <button id="play">Play</button>
+          </li>
+        </ul>
+        <ul>
+          <li>
+            <h5>About:</h5>
+            <p>
+              Escape the mazes before becoming lost in time. Watch out for enemies
+              lurking in the shadows.
+            </p>
+          <li>
+            <h5>Controls:</h5>
+            <p>
+              <code>WASD</code> to move. <code>Spacebar</code> to dash.
+              <code>Left-click</code> to fire arrows. <code>P</code> to pause.
+              <code>M</code> to mute.
+          </li>
+        </ul>
+      </div>
+    </main>
+    <div class="centered-container">
+      <canvas id="canvas" width="1920" height="1080" tabindex="1"></canvas>
+    </div>
   </body>
 
 </html>
