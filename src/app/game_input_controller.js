@@ -63,7 +63,7 @@ function createGameInputController(spec) {
     }
   }
 
-  const onMenuPlay = () => {
+  const togglePause = () => {
     paused = !paused
   }
 
@@ -87,7 +87,7 @@ function createGameInputController(spec) {
   const unregisterListeners = () => {
     docWindow.removeEventListener('keyup', onKeyUp)
     docWindow.removeEventListener('keydown', onKeyDown)
-    docWindow.removeEventListener('Menu:playButtonPressed', onMenuPlay)
+    docWindow.removeEventListener('Menu:playButtonPressed', togglePause)
     graphics.canvas.removeEventListener('mousemove', onMouseMove)
     graphics.canvas.removeEventListener('mousedown', onMouseDown)
     graphics.canvas.removeEventListener('mouseup', onMouseUp)
@@ -95,7 +95,7 @@ function createGameInputController(spec) {
 
   docWindow.addEventListener('keyup', onKeyUp)
   docWindow.addEventListener('keydown', onKeyDown)
-  docWindow.addEventListener('Menu:playButtonPressed', onMenuPlay)
+  docWindow.addEventListener('Menu:playButtonPressed', togglePause)
   graphics.canvas.addEventListener('mousemove', onMouseMove)
   graphics.canvas.addEventListener('mousedown', onMouseDown)
   graphics.canvas.addEventListener('mouseup', onMouseUp)
@@ -108,7 +108,8 @@ function createGameInputController(spec) {
     isDash: isDash,
     isPaused: isPaused,
     mouse: mouse,
-    unregisterListeners: unregisterListeners
+    unregisterListeners: unregisterListeners,
+    togglePause: togglePause
   }
 }
 

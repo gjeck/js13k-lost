@@ -32,6 +32,9 @@ function createHero(spec) {
   }
 
   const update = (delta) => {
+    if ((meta.status & MetaStatus.active) === 0) {
+      return
+    }
     const newSpeed = isDashing ? speed * 2 : speed
     if (inputController.isUp()) {
       frame.y -= delta * newSpeed
@@ -46,6 +49,9 @@ function createHero(spec) {
   }
 
   const render = () => {
+    if ((meta.status & MetaStatus.visible) === 0) {
+      return
+    }
     graphics.ctx.save()
     graphics.ctx.fillStyle = 'white'
     graphics.ctx.globalAlpha = getAlpha()

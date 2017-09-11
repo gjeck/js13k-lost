@@ -54,5 +54,8 @@
         ]
       }
     }
+  },
+  "dependencies": {
+    "jsfxr": "0.0.1"
   }
 }

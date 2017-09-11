@@ -13,7 +13,7 @@
         <h1>Mazeren</h1>
         <ul>
           <li>
-            <button id="play">Play</button>
+            <button id="play" tabindex="1">Play</button>
           </li>
         </ul>
         <ul>
@@ -34,7 +34,15 @@
       </div>
     </main>
     <div class="centered-container">
-      <canvas id="canvas" width="1920" height="1080" tabindex="1"></canvas>
+      <canvas id="canvas" width="1920" height="1080" tabindex="2"></canvas>
+    </div>
+    <div id="replay-popup" class="menu-container popup-container fixed-centered-container hide">
+      <h3>You Died</h3>
+      <ul>
+        <li>
+          <button id="replay">Retry?</button>
+        </li>
+      </ul>
     </div>
   </body>
 

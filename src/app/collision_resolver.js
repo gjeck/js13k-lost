@@ -80,11 +80,15 @@ function createCollisionResolver(spec) {
         emitter.emit('CollisionResolver:enemyDied', item)
       }
     } else if (entity.meta.type === MetaType.enemy && item.meta.type === MetaType.hero) {
-      if ((entity.meta.status & MetaStatus.active) !== 0 && (item.meta.status & MetaStatus.invulnerable) === 0) {
+      if ((entity.meta.status & MetaStatus.active) !== 0 &&
+        (item.meta.status & MetaStatus.active) !== 0 &&
+        (item.meta.status & MetaStatus.invulnerable) === 0) {
         item.meta.health -= entity.meta.damage
         emitter.emit('CollisionResolver:heroTouchedEnemy', entity)
       }
-      if (item.meta.health <= 0) {
+      if (item.meta.health <= 0 && (item.meta.status & MetaStatus.active) !== 0) {
+        item.meta.status &= ~MetaStatus.visible
+        item.meta.status &= ~MetaStatus.active
         emitter.emit('CollisionResolver:heroDied', entity)
       }
     }

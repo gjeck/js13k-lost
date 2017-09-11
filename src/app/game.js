@@ -1,6 +1,7 @@
 function createGame(spec) {
   const levelFactory = spec.levelFactory
   const emitter = spec.emitter
+  const docWindow = spec.docWindow || window
   const levels = []
   let levelCount = 0
   let transitioningLevels = false
@@ -46,8 +47,22 @@ function createGame(spec) {
     })
   }
 
+  const reset = () => {
+    levelCount = 0
+    transitionLevels()
+  }
+
   emitter.on('Level:heroExited', () => {
     transitionLevels()
+  })
+
+  emitter.on('CollisionResolver:heroDied', () => {
+    const event = new Event('Game:lost')
+    docWindow.dispatchEvent(event)
+  })
+
+  docWindow.addEventListener('Menu:replayButtonPressed', () => {
+    reset()
   })
 
   return {

@@ -63,6 +63,7 @@ function createLevel(spec) {
 
   const start = (callback) => {
     graphics.fadeIn(callback)
+    gameInputController.togglePause()
   }
 
   const complete = (callback) => {

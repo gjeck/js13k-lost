@@ -3,6 +3,8 @@ const webpack = require('webpack')
 const htmlWebpackPlugin = require('html-webpack-plugin')
 const extractTextPlugin = require('extract-text-webpack-plugin')
 
+const isProduction = process.env.npm_lifecycle_event === 'build'
+
 let config = {
   entry: {
     main: './src/index.js'
@@ -31,7 +33,7 @@ let config = {
     }, {
       test: /\.css$/,
       use: extractTextPlugin.extract({
-        fallback: "style-loader", 
+        fallback: "style-loader",
         use: "css-loader"
       })
     }, {
@@ -44,7 +46,15 @@ let config = {
   plugins: [
     new htmlWebpackPlugin({
       filename: 'index.html',
-      template: 'src/index.html'
+      template: 'src/index.html',
+      minify: !isProduction ? false : {
+        removeAttributeQuotes: true,
+        collapseWhitespace: true,
+        html5: true,
+        minifyCSS: true,
+        removeComments: true,
+        removeEmptyAttributes: true,
+      }
     }),
     new extractTextPlugin('[name].css')
   ],
@@ -54,7 +64,6 @@ let config = {
   }
 }
 
-const isProduction = process.env.npm_lifecycle_event === 'build'
 if(!isProduction) {
   config.devtool = 'eval-source-map'
 } else {

@@ -75,6 +75,11 @@ canvas {
   background-color: rgba(54, 34, 145, 1);
 }
 
+.popup-container {
+  padding: 35px 75px;
+  border-radius: 5px;
+}
+
 .fixed-container {
   position: fixed;
   width: 100%;
@@ -83,6 +88,13 @@ canvas {
 
 .absolute-centered-container {
   position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.fixed-centered-container {
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -119,6 +131,11 @@ canvas {
 
 .fade-in {
   animation: fade-in 0.75s ease-in-out;
+  animation-fill-mode: forwards;
+}
+
+.fade-out {
+  animation: fade-out 0.75s ease-in-out;
   animation-fill-mode: forwards;
 }
 
@@ -198,5 +215,16 @@ canvas {
   to {
     opacity: 1;
     visibility: visible;
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+    visibility: visible;
+  }
+  to {
+    opacity: 0;
+    visibility: hidden;
   }
 }
