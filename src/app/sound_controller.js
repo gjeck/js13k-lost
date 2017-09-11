@@ -19,6 +19,7 @@ SoundController.prototype.play = function(sound) {
 function createSoundController(spec) {
   const soundController = new SoundController(false)
   const emitter = spec.emitter
+  let soundThrottleTimeoutId = null
 
   emitter.on('Hero:onMouseDown', (ammunition) => {
     if (ammunition.length) {
@@ -37,11 +38,21 @@ function createSoundController(spec) {
   })
 
   emitter.on('CollisionResolver:heroTouchedEnemy', () => {
-    soundController.play(Sounds.hero.hurt[randomIntInRange(0, Sounds.hero.hurt.length)])
+    if (soundThrottleTimeoutId) {
+      return
+    }
+    soundThrottleTimeoutId = setTimeout(() => {
+      soundController.play(Sounds.hero.hurt[randomIntInRange(0, Sounds.hero.hurt.length)])
+      soundThrottleTimeoutId = null
+    }, 300)
   })
 
   emitter.on('CollisionResolver:enemyDied', () => {
     soundController.play(Sounds.enemy.died[randomIntInRange(0, Sounds.enemy.died.length)])
+  })
+
+  emitter.on('CollisionResolver:heroDied', () => {
+    soundController.play(Sounds.hero.died)
   })
 
   return soundController
@@ -67,9 +78,10 @@ const Sounds = Object.freeze({
       jsfxr([0,0.0074,0.01,0.6028,0.2642,0.5521,0.038,,-0.0054,,,0.3896,0.5173,0.0287,-0.0159,0.0239,,-0.0176,0.9738,,,0.036,0.0484,0.5])
     ],
     hurt: [
-      jsfxr([3,,0.1216,0.4737,0.3359,0.0444,,0.0488,,,,,,,,,0.102,-0.1476,1,,,,,0.5]),
-      jsfxr([3,,0.1114,0.4446,0.3265,0.0391,,0.0088,-0.03,,,0.0264,,,-0.0284,0.0162,0.102,-0.1667,1,,0.0309,0.0422,0.0105,0.5])
-    ]
+      jsfxr([3,,0.1216,0.4737,0.3359,0.0444,,0.0488,,,,,,,,,0.102,-0.1476,1,,,,,0.35]),
+      jsfxr([3,,0.1114,0.4446,0.3265,0.0391,,0.0088,-0.03,,,0.0264,,,-0.0284,0.0162,0.102,-0.1667,1,,0.0309,0.0422,0.0105,0.35])
+    ],
+    died: jsfxr([3,,0.2485,0.5029,0.4305,0.2722,,-0.2421,,,,,,,,0.449,,,1,,,,,0.5])
   },
   enemy: {
     died: [
