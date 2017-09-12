@@ -4,7 +4,7 @@ function createGame(spec) {
   const docWindow = spec.docWindow || window
   const levels = []
   const levelsToWin = 3
-  let levelCount = 0
+  let levelCount = 1
   let transitioningLevels = false
   let isGameWon = false
 
@@ -21,11 +21,11 @@ function createGame(spec) {
   }
 
   const checkWinCondition = () => {
-    if (levelCount - 1 >= levelsToWin && !isGameWon) {
+    if (levelCount - 1 > levelsToWin && !isGameWon) {
       win()
       isGameWon = true
     }
-    return levelCount - 1 >= levelsToWin
+    return levelCount - 1 > levelsToWin
   }
 
   const begin = (timeStamp, frameDelta) => {

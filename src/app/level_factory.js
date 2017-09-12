@@ -17,9 +17,11 @@ import createLevel from './level'
 import createHud from './hud'
 
 function createLevelFactory(spec) {
-  const emitter = spec.emitter
-  const graphics = spec.graphics
-  const soundController = spec.soundController
+  const s = spec || {}
+  const emitter = s.emitter
+  const graphics = s.graphics
+  const soundController = s.soundController
+  const enemySpawnLikelihood = s.enemySpawnLikelihood || 0.08
 
   const makeLevel = (levelCount, maxLevels) => {
     const mazeGenerator = createMazeGenerator()
@@ -67,8 +69,15 @@ function createLevelFactory(spec) {
     })
 
     const enemies = []
-    for (let i = map.rows / 4; i < map.rows; i += 2) {
-      for (let j = map.cols / 4; j < map.cols; j += 4) {
+    for (let i = 0; i < map.rows; ++i) {
+      for (let j = 0; j < map.cols; ++j) {
+        if (i < 4 && j < 4) {
+          continue
+        }
+        const spawnRate = enemySpawnLikelihood + (enemySpawnLikelihood * (levelCount / maxLevels))
+        if (spawnRate < Math.random()) {
+          continue
+        }
         let x = map.tileSize * j + (map.tileSize / 2)
         let y = map.tileSize * i + (map.tileSize / 2)
         const enemyFrame = createBoundingRect({ x: x, y: y, width: 25, height: 25 })
