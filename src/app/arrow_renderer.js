@@ -2,8 +2,8 @@ function createArrowRenderer(spec) {
   const s = spec || {}
   const graphics = s.graphics
   const frame = s.frame
-  const arrowLength = s.arrowLength || 17
-  const arrowThickness = s.arrowThickness || 8
+  const arrowLength = s.arrowLength || 15
+  const arrowThickness = s.arrowThickness || 11
 
   const render = (angle) => {
     graphics.ctx.save()

@@ -16,7 +16,10 @@ document.addEventListener('DOMContentLoaded', function() {
     graphics: graphics,
     soundController: soundController
   })
-  const game = createGame({ emitter: emitter, levelFactory: levelFactory })
+  const game = createGame({
+    emitter: emitter,
+    levelFactory: levelFactory
+  })
 
   emitter.on('RunLoop:begin', (timeStamp, frameDelta) => {
     game.begin(timeStamp, frameDelta)
