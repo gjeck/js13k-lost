@@ -30,6 +30,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
+  const replayPopupMessage = document.getElementById('replay-popup-message')
+  const toggleReplayModalWithMessage = (event) => {
+    replayPopupMessage.innerText = event.message
+    replayToggle()
+  }
+
   const replayEvent = new Event('Menu:replayButtonPressed')
   const replayButton = document.getElementById('replay')
   replayButton.addEventListener('click', () => {
@@ -37,5 +43,6 @@ document.addEventListener('DOMContentLoaded', function() {
     window.dispatchEvent(replayEvent)
     replayButton.blur()
   })
-  window.addEventListener('Game:lost', replayToggle)
+  window.addEventListener('Game:lost', toggleReplayModalWithMessage)
+  window.addEventListener('Game:won', toggleReplayModalWithMessage)
 })

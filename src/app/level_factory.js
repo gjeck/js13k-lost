@@ -14,13 +14,14 @@ import createArrowRenderer from './arrow_renderer'
 import { MetaType, MetaStatus } from './meta'
 import createLight from './light'
 import createLevel from './level'
+import createHud from './hud'
 
 function createLevelFactory(spec) {
   const emitter = spec.emitter
   const graphics = spec.graphics
   const soundController = spec.soundController
 
-  const makeLevel = (levelCount) => {
+  const makeLevel = (levelCount, maxLevels) => {
     const mazeGenerator = createMazeGenerator()
     const map = createMap({
       graphics: graphics,
@@ -42,7 +43,7 @@ function createLevelFactory(spec) {
     const heroFrame = createBoundingRect({ x: 20, y: 20, width: 27, height: 27 })
     const projectiles = []
     for (let i = 0; i < 5; ++i) {
-      const arrowFrame = createBoundingRect({ x: 0, y: 0, width: 11, height: 11 })
+      const arrowFrame = createBoundingRect({ x: 0, y: 0, width: 15, height: 15 })
       const arrowRenderer = createArrowRenderer({ graphics: graphics, frame: arrowFrame })
       const arrow = createProjectile({
         frame: arrowFrame,
@@ -107,6 +108,14 @@ function createLevelFactory(spec) {
       map: map
     })
 
+    const hud = createHud({
+      emitter: emitter,
+      graphics: graphics,
+      hero: hero,
+      level: levelCount,
+      maxLevels: maxLevels
+    })
+
     return createLevel({
       emitter: emitter,
       gameInputController: gameInputController,
@@ -119,7 +128,8 @@ function createLevelFactory(spec) {
       collisionResolver: collisionResolver,
       graphics: graphics,
       camera: camera,
-      light: light
+      light: light,
+      hud: hud
     })
   }
 

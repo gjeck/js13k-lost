@@ -10,6 +10,7 @@ function createLevel(spec) {
   const graphics = spec.graphics
   const camera = spec.camera
   const light = spec.light
+  const hud = spec.hud
 
   const begin = (timeStamp, frameDelta) => {
     if (!hero.frame.intersectsViewport(camera.viewport)) {
@@ -42,6 +43,7 @@ function createLevel(spec) {
       const projectileResults = quadtree.query(projectile.frame)
       collisionResolver.resolve(projectile, projectileResults)
     })
+    hud.update(delta)
   }
 
   const render = (interpolationPercentage) => {
@@ -55,6 +57,7 @@ function createLevel(spec) {
     map.render(camera.viewport)
     hero.render()
     camera.end()
+    hud.render()
   }
 
   const end = (fps, panic) => {
@@ -70,6 +73,7 @@ function createLevel(spec) {
     graphics.fadeOut(callback)
     gameInputController.unregisterListeners()
     hero.unregisterListeners()
+    hud.unregisterListeners()
   }
 
   return {

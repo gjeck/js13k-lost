@@ -16,6 +16,7 @@ const MetaStatus = Object.freeze({
 function Meta(type, health, damage, status) {
   this.type = type
   this.health = health
+  this.totalHealth = health
   this.damage = damage
   this.status = status
 }

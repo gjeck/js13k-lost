@@ -76,8 +76,12 @@ canvas {
 }
 
 .popup-container {
-  padding: 35px 75px;
+  padding: 50px 125px;
   border-radius: 5px;
+}
+
+.popup-container h2 {
+  text-align: center;
 }
 
 .fixed-container {
