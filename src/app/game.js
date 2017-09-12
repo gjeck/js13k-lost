@@ -72,6 +72,7 @@ function createGame(spec) {
   const reset = () => {
     levelCount = 0
     transitionLevels()
+    isGameWon = false
   }
 
   const win = () => {
