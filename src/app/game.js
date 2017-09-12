@@ -70,7 +70,7 @@ function createGame(spec) {
   }
 
   const reset = () => {
-    levelCount = 0
+    levelCount = 1
     transitionLevels()
     isGameWon = false
   }
