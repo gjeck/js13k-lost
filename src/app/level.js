@@ -4,6 +4,7 @@ function createLevel(spec) {
   const hero = spec.hero
   const enemies = spec.enemies
   const projectiles = spec.projectiles
+  const enemyProjectiles = spec.enemyProjectiles
   const quadtree = spec.quadtree
   const map = spec.map
   const collisionResolver = spec.collisionResolver
@@ -25,9 +26,11 @@ function createLevel(spec) {
     hero.update(delta)
     enemies.forEach((enemy) => { enemy.update(delta) })
     projectiles.forEach((projectile) => { projectile.update(delta) })
+    enemyProjectiles.forEach((projectile) => { projectile.update(delta) })
 
     quadtree.insert(hero)
     projectiles.forEach((projectile) => { quadtree.insert(projectile) })
+    enemyProjectiles.forEach((projectile) => { quadtree.insert(projectile) })
     enemies.forEach((enemy) => { quadtree.insert(enemy) })
     map.walls.forEach((wall) => { quadtree.insert(wall) })
 
@@ -43,6 +46,12 @@ function createLevel(spec) {
       const projectileResults = quadtree.query(projectile.frame)
       collisionResolver.resolve(projectile, projectileResults)
     })
+
+    enemyProjectiles.forEach((projectile) => {
+      const enemyProjectileResults = quadtree.query(projectile.frame)
+      collisionResolver.resolve(projectile, enemyProjectileResults)
+    })
+
     hud.update(delta)
   }
 
@@ -50,6 +59,7 @@ function createLevel(spec) {
     graphics.reset()
     camera.begin()
     camera.follow(hero.frame)
+    enemyProjectiles.forEach((projectile) => { projectile.render() })
     enemies.forEach((enemy) => { enemy.render(camera.viewport) })
     projectiles.forEach((projectile) => { projectile.render() })
     light.calculateIntersections(camera.viewport)

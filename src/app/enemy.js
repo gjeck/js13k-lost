@@ -5,14 +5,19 @@ function createEnemy(spec) {
   const s = spec || {}
   const graphics = s.graphics
   const movementBehavior = s.movementBehavior
+  const attackBehavior = s.attackBehavior
   const frame = s.frame || createBoundingRect(s)
   const meta = s.meta || createMeta(s)
+  const fillStyle = s.fillStyle || '#DB2E1B'
 
   const update = (delta) => {
     if ((meta.status & MetaStatus.active) === 0) {
       return
     }
     movementBehavior.update(delta)
+    if (attackBehavior) {
+      attackBehavior.update()
+    }
   }
 
   const render = (viewport) => {
@@ -23,7 +28,7 @@ function createEnemy(spec) {
       return
     }
     graphics.ctx.save()
-    graphics.ctx.fillStyle = '#DB2E1B'
+    graphics.ctx.fillStyle = fillStyle
     graphics.drawCircle(frame.x, frame.y, frame.width / 2)
     graphics.ctx.restore()
   }

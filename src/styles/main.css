@@ -148,30 +148,6 @@ canvas {
   animation-name: twiddle;
 }
 
-.rotate180 {
-  animation-duration: 1s;
-  animation-name: rotate180;
-}
-
-.rotated180 {
-  transform: rotate(180deg);
-}
-
-@keyframes rotate180 {
-  100% {
-    transform: rotate(180deg);
-  }
-}
-
-@keyframes zoomInOut {
-  from {
-    transform: scale(1)
-  }
-  to {
-    transform: scale(3)
-  }
-}
-
 @keyframes twiddle {
   19% {
     transform: scale(1.4) translate3d(-3px, 1px, 0);

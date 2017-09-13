@@ -13,7 +13,10 @@ function createCollisionResolver(spec) {
         itemMeta.type === MetaType.hero &&
         (itemMeta.status & MetaStatus.invulnerable) !== 0) ||
       (itemMeta.status & MetaStatus.active) === 0 ||
-      (entityMeta.status & MetaStatus.active) === 0
+      (entityMeta.status & MetaStatus.active) === 0 ||
+      (entityMeta.type === MetaType.enemy && itemMeta.type === MetaType.enemyArrow) ||
+      (entityMeta.type === MetaType.enemyArrow && itemMeta.type === MetaType.enemy) ||
+      (entityMeta.type === MetaType.enemyArrow && itemMeta.type === MetaType.enemyArrow)
   }
 
   const resolve = (entity, collection) => {
@@ -85,6 +88,23 @@ function createCollisionResolver(spec) {
         (item.meta.status & MetaStatus.invulnerable) === 0) {
         item.meta.health -= entity.meta.damage
         emitter.emit('CollisionResolver:heroTouchedEnemy', entity)
+      }
+      if (item.meta.health <= 0 && (item.meta.status & MetaStatus.active) !== 0) {
+        item.meta.status &= ~MetaStatus.visible
+        item.meta.status &= ~MetaStatus.active
+        emitter.emit('CollisionResolver:heroDied', entity)
+      }
+    } else if (entity.meta.type === MetaType.enemyArrow && item.meta.type === MetaType.wall) {
+      entity.meta.status &= ~MetaStatus.active
+      entity.meta.status &= ~MetaStatus.visible
+    } else if (entity.meta.type === MetaType.enemyArrow && item.meta.type === MetaType.hero) {
+      if ((entity.meta.status & MetaStatus.active) !== 0 &&
+        (item.meta.status & MetaStatus.active) !== 0 &&
+        (item.meta.status & MetaStatus.invulnerable) === 0) {
+        item.meta.health -= entity.meta.damage
+        emitter.emit('CollisionResolver:heroTouchedEnemy', entity)
+        entity.meta.status &= ~MetaStatus.active
+        entity.meta.status &= ~MetaStatus.visible
       }
       if (item.meta.health <= 0 && (item.meta.status & MetaStatus.active) !== 0) {
         item.meta.status &= ~MetaStatus.visible

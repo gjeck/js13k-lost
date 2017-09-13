@@ -8,9 +8,9 @@ function createRandomMovementBehavior(spec) {
   let speed = s.speed || 0.31
   const lastPosition = { x: frame.x, y: frame.y }
   const targetVector = { x: targetFrame.centerX(), y: targetFrame.centerY() }
+  const actionDistance = s.actionDistance || 250
+  const randomness = s.randomness || 0.04
   let direction = s.direction || Direction.none
-  let randomness = s.randomness || 0.04
-  let actionDistance = s.actionDistance || 250
 
   const update = (delta) => {
     targetVector.x = targetFrame.centerX() - frame.centerX()

@@ -3,7 +3,8 @@ const MetaType = Object.freeze({
   hero: 1,
   wall: 2,
   arrow: 3,
-  enemy: 4
+  enemy: 4,
+  enemyArrow: 5
 })
 
 const MetaStatus = Object.freeze({

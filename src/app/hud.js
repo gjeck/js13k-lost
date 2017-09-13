@@ -7,41 +7,41 @@ function createHud(spec) {
   const hero = s.hero
   const level = s.level
   const maxLevels = s.maxLevels
-  const barFrameWidth = 120
+  const barFrameWidth = 160
   const healthBarFrame = createBoundingRect({
-    x: 30,
-    y: graphics.canvas.height - 40,
+    x: 20,
+    y: graphics.canvas.height - 60,
     width: barFrameWidth,
-    height: 25
+    height: 40
   })
   const healthBarBackgroundFrame = createBoundingRect({
-    x: 30,
-    y: graphics.canvas.height - 40,
+    x: 20,
+    y: graphics.canvas.height - 60,
     width: barFrameWidth,
-    height: 25
+    height: 40
   })
   const staminaBarFrame = createBoundingRect({
-    x: 160,
-    y: graphics.canvas.height - 40,
+    x: 200,
+    y: graphics.canvas.height - 60,
     width: barFrameWidth,
-    height: 25
+    height: 40
   })
   const staminaBarBackgroundFrame = createBoundingRect({
-    x: 160,
-    y: graphics.canvas.height - 40,
+    x: 200,
+    y: graphics.canvas.height - 60,
     width: barFrameWidth,
-    height: 25
+    height: 40
   })
   const completedLevelsFrame = createBoundingRect({
     x: graphics.canvas.width - 80,
     y: graphics.canvas.height - 15,
     width: 60,
-    height: 25
+    height: 40
   })
 
   const update = (delta) => {
-    healthBarFrame.width = (hero.meta.health / hero.meta.totalHealth) * barFrameWidth
-    staminaBarFrame.width = Math.min(barFrameWidth, staminaBarFrame.width + 0.71)
+    healthBarFrame.width = Math.max((hero.meta.health / hero.meta.totalHealth) * barFrameWidth, 0)
+    staminaBarFrame.width = Math.min(barFrameWidth, staminaBarFrame.width + 0.92)
   }
 
   const onHeroDash = () => {
@@ -69,7 +69,7 @@ function createHud(spec) {
     graphics.ctx.fillStyle = '#28DB68'
     graphics.drawRect(staminaBarFrame.x, staminaBarFrame.y, staminaBarFrame.width, staminaBarFrame.height)
     graphics.ctx.fillStyle = 'white'
-    graphics.ctx.font = '24px "Helvetica Neue", Helvetica, Sans-Serif'
+    graphics.ctx.font = '28px "Helvetica Neue", Helvetica, Sans-Serif'
     graphics.ctx.textBaseline = 'bottom'
     graphics.ctx.fillText(`${level} / ${maxLevels}`, completedLevelsFrame.x, completedLevelsFrame.y)
     graphics.ctx.restore()

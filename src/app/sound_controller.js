@@ -55,6 +55,10 @@ function createSoundController(spec) {
     soundController.play(Sounds.hero.died)
   })
 
+  emitter.on('Enemy:didFire', () => {
+    soundController.play(Sounds.enemy.fire)
+  })
+
   return soundController
 }
 
@@ -87,7 +91,8 @@ const Sounds = Object.freeze({
     died: [
       jsfxr([0,0.0355,0.0514,,0.1975,0.2944,,-0.2884,0.0285,,,,,0.3462,-0.0323,,-0.0342,-0.0466,0.9699,-0.0228,,,0.0472,0.5]),
       jsfxr([0,,0.0778,,0.1975,0.2944,0.0156,-0.2884,0.0285,,,,,0.3293,-0.0323,,-0.0378,-0.0848,0.9699,-0.0104,0.0358,,0.0814,0.5])
-    ]
+    ],
+    fire: jsfxr([2,,0.132,0.1027,0.1289,0.4003,0.015,-0.369,,,,,,0.6463,-0.323,,,,1,,,0.1872,,0.5])
   }
 })
 
