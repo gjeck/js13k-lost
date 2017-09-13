@@ -33,11 +33,11 @@ function createSoundController(spec) {
     soundController.play(Sounds.hero.dash[randomIntInRange(0, Sounds.hero.dash.length)])
   })
 
-  emitter.on('CollisionResolver:heroTouchedProjectile', () => {
+  emitter.on('CR:heroTouchedProj', () => {
     soundController.play(Sounds.hero.pickup[randomIntInRange(0, Sounds.hero.pickup.length)])
   })
 
-  emitter.on('CollisionResolver:heroTouchedEnemy', () => {
+  emitter.on('CR:heroTouchedEnemy', () => {
     if (soundThrottleTimeoutId) {
       return
     }
@@ -47,11 +47,11 @@ function createSoundController(spec) {
     }, 300)
   })
 
-  emitter.on('CollisionResolver:enemyDied', () => {
+  emitter.on('CR:enemyDied', () => {
     soundController.play(Sounds.enemy.died[randomIntInRange(0, Sounds.enemy.died.length)])
   })
 
-  emitter.on('CollisionResolver:heroDied', () => {
+  emitter.on('CR:heroDied', () => {
     soundController.play(Sounds.hero.died)
   })
 

@@ -176,7 +176,7 @@ function createLevelFactory(spec) {
             frame: enemyFrame,
             movementBehavior: movementBehavior,
             attackBehavior: attackBehavior,
-            health: 8,
+            health: 6,
             damage: 1,
             type: MetaType.enemy
           })

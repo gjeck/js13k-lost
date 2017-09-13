@@ -89,14 +89,14 @@ function createHero(spec) {
   }
 
   const unregisterListeners = () => {
-    emitter.removeListener('GameInputController:keydown', onKeyDown)
-    emitter.removeListener('GameInputController:mousedown', onMouseDown)
-    emitter.removeListener('CollisionResolver:heroTouchedProjectile', onTouchProjectile)
+    emitter.removeListener('GIC:keydown', onKeyDown)
+    emitter.removeListener('GIC:mousedown', onMouseDown)
+    emitter.removeListener('CR:heroTouchedProj', onTouchProjectile)
   }
 
-  emitter.on('GameInputController:keydown', onKeyDown)
-  emitter.on('GameInputController:mousedown', onMouseDown)
-  emitter.on('CollisionResolver:heroTouchedProjectile', onTouchProjectile)
+  emitter.on('GIC:keydown', onKeyDown)
+  emitter.on('GIC:mousedown', onMouseDown)
+  emitter.on('CR:heroTouchedProj', onTouchProjectile)
 
   return {
     frame: frame,

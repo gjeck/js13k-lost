@@ -12,6 +12,9 @@ function createLevel(spec) {
   const camera = spec.camera
   const light = spec.light
   const hud = spec.hud
+  const state = {}
+  state.isStarted = false
+  state.zoomStart = map.cols * map.tileSize + map.wallDimension()
 
   const begin = (timeStamp, frameDelta) => {
     if (!hero.frame.intersectsViewport(camera.viewport)) {
@@ -23,10 +26,19 @@ function createLevel(spec) {
     if (gameInputController.isPaused()) {
       return
     }
+    if (!state.isStarted) {
+      camera.zoomTo(state.zoomStart)
+      state.zoomStart -= 55
+      if (state.zoomStart <= 1000) {
+        state.isStarted = true
+      }
+      return
+    }
     hero.update(delta)
     enemies.forEach((enemy) => { enemy.update(delta) })
     projectiles.forEach((projectile) => { projectile.update(delta) })
     enemyProjectiles.forEach((projectile) => { projectile.update(delta) })
+    hud.update(delta)
 
     quadtree.insert(hero)
     projectiles.forEach((projectile) => { quadtree.insert(projectile) })
@@ -51,21 +63,21 @@ function createLevel(spec) {
       const enemyProjectileResults = quadtree.query(projectile.frame)
       collisionResolver.resolve(projectile, enemyProjectileResults)
     })
-
-    hud.update(delta)
   }
 
   const render = (interpolationPercentage) => {
     graphics.reset()
     camera.begin()
     camera.follow(hero.frame)
-    enemyProjectiles.forEach((projectile) => { projectile.render() })
-    enemies.forEach((enemy) => { enemy.render(camera.viewport) })
-    projectiles.forEach((projectile) => { projectile.render() })
-    light.calculateIntersections(camera.viewport)
-    light.render()
+    if (state.isStarted) {
+      enemyProjectiles.forEach((projectile) => { projectile.render() })
+      enemies.forEach((enemy) => { enemy.render(camera.viewport) })
+      projectiles.forEach((projectile) => { projectile.render() })
+      light.calculateIntersections(camera.viewport)
+      light.render()
+      hero.render()
+    }
     map.render(camera.viewport)
-    hero.render()
     camera.end()
     hud.render()
   }

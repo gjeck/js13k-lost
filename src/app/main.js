@@ -21,19 +21,19 @@ document.addEventListener('DOMContentLoaded', function() {
     levelFactory: levelFactory
   })
 
-  emitter.on('RunLoop:begin', (timeStamp, frameDelta) => {
+  emitter.on('RL:begin', (timeStamp, frameDelta) => {
     game.begin(timeStamp, frameDelta)
   })
 
-  emitter.on('RunLoop:update', (delta) => {
+  emitter.on('RL:update', (delta) => {
     game.update(delta)
   })
 
-  emitter.on('RunLoop:render', (interpolationPercentage) => {
+  emitter.on('RL:render', (interpolationPercentage) => {
     game.render(interpolationPercentage)
   })
 
-  emitter.on('RunLoop:end', (fps, panic) => {
+  emitter.on('RL:end', (fps, panic) => {
     game.end(fps, panic)
   })
 

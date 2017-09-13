@@ -10,14 +10,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  const playEvent = new Event('Menu:playButtonPressed')
+  const playEvent = new Event('M:playBtnPressed')
   const playButton = document.getElementById('play')
   playButton.addEventListener('click', () => {
     pauseToggle()
     window.dispatchEvent(playEvent)
     playButton.blur()
   })
-  window.addEventListener('GameInputController:gamePauseToggled', pauseToggle)
+  window.addEventListener('GIC:gamePauseToggled', pauseToggle)
 
   const replayPopup = document.getElementById('replay-popup')
   const replayToggle = () => {
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
     replayToggle()
   }
 
-  const replayEvent = new Event('Menu:replayButtonPressed')
+  const replayEvent = new Event('M:replayBtnPressed')
   const replayButton = document.getElementById('replay')
   replayButton.addEventListener('click', () => {
     replayToggle()

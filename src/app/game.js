@@ -85,13 +85,13 @@ function createGame(spec) {
     transitionLevels()
   })
 
-  emitter.on('CollisionResolver:heroDied', () => {
+  emitter.on('CR:heroDied', () => {
     const event = new Event('Game:lost')
     event.message = 'You died'
     docWindow.dispatchEvent(event)
   })
 
-  docWindow.addEventListener('Menu:replayButtonPressed', () => {
+  docWindow.addEventListener('M:replayBtnPressed', () => {
     reset()
   })
 

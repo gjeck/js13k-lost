@@ -34,7 +34,7 @@ function createRunLoop(spec) {
     if (!started) {
       started = true
       rafHandle = requestAnimationFrame((timeStamp) => {
-        emitter.emit('RunLoop:render', 1)
+        emitter.emit('RL:render', 1)
 
         running = true
 
@@ -60,7 +60,7 @@ function createRunLoop(spec) {
 
     frameDelta += timeStamp - lastFrameTimeMs
     lastFrameTimeMs = timeStamp
-    emitter.emit('RunLoop:begin', timeStamp, frameDelta)
+    emitter.emit('RL:begin', timeStamp, frameDelta)
 
     if (timeStamp > lastFpsUpdate + fpsUpdateInterval) {
       fps = fpsAlpha * framesSinceLastFpsUpdate * 1000 / (timeStamp - lastFpsUpdate) + (1 - fpsAlpha) * fps
@@ -72,7 +72,7 @@ function createRunLoop(spec) {
 
     numUpdateSteps = 0
     while (frameDelta >= simulationTimestep) {
-      emitter.emit('RunLoop:update', simulationTimestep)
+      emitter.emit('RL:update', simulationTimestep)
       frameDelta -= simulationTimestep
       if (++numUpdateSteps >= 240) {
         panic = true
@@ -80,8 +80,8 @@ function createRunLoop(spec) {
       }
     }
 
-    emitter.emit('RunLoop:render', frameDelta / simulationTimestep)
-    emitter.emit('RunLoop:end', fps, panic)
+    emitter.emit('RL:render', frameDelta / simulationTimestep)
+    emitter.emit('RL:end', fps, panic)
 
     panic = false
   }

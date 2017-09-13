@@ -71,7 +71,7 @@ function createCollisionResolver(spec) {
     } else if (entity.meta.type === MetaType.arrow && item.meta.type === MetaType.hero) {
       if ((entity.meta.status & MetaStatus.active) === 0 && (entity.meta.status & MetaStatus.visible) !== 0) {
         entity.meta.status &= ~MetaStatus.visible
-        emitter.emit('CollisionResolver:heroTouchedProjectile', entity)
+        emitter.emit('CR:heroTouchedProj', entity)
       }
     } else if (entity.meta.type === MetaType.arrow && item.meta.type === MetaType.enemy) {
       if ((entity.meta.status & MetaStatus.active) !== 0) {
@@ -80,19 +80,19 @@ function createCollisionResolver(spec) {
       if (item.meta.health <= 0 && (item.meta.status & MetaStatus.active) !== 0) {
         item.meta.status &= ~MetaStatus.visible
         item.meta.status &= ~MetaStatus.active
-        emitter.emit('CollisionResolver:enemyDied', item)
+        emitter.emit('CR:enemyDied', item)
       }
     } else if (entity.meta.type === MetaType.enemy && item.meta.type === MetaType.hero) {
       if ((entity.meta.status & MetaStatus.active) !== 0 &&
         (item.meta.status & MetaStatus.active) !== 0 &&
         (item.meta.status & MetaStatus.invulnerable) === 0) {
         item.meta.health -= entity.meta.damage
-        emitter.emit('CollisionResolver:heroTouchedEnemy', entity)
+        emitter.emit('CR:heroTouchedEnemy', entity)
       }
       if (item.meta.health <= 0 && (item.meta.status & MetaStatus.active) !== 0) {
         item.meta.status &= ~MetaStatus.visible
         item.meta.status &= ~MetaStatus.active
-        emitter.emit('CollisionResolver:heroDied', entity)
+        emitter.emit('CR:heroDied', entity)
       }
     } else if (entity.meta.type === MetaType.enemyArrow && item.meta.type === MetaType.wall) {
       entity.meta.status &= ~MetaStatus.active
@@ -102,14 +102,14 @@ function createCollisionResolver(spec) {
         (item.meta.status & MetaStatus.active) !== 0 &&
         (item.meta.status & MetaStatus.invulnerable) === 0) {
         item.meta.health -= entity.meta.damage
-        emitter.emit('CollisionResolver:heroTouchedEnemy', entity)
+        emitter.emit('CR:heroTouchedEnemy', entity)
         entity.meta.status &= ~MetaStatus.active
         entity.meta.status &= ~MetaStatus.visible
       }
       if (item.meta.health <= 0 && (item.meta.status & MetaStatus.active) !== 0) {
         item.meta.status &= ~MetaStatus.visible
         item.meta.status &= ~MetaStatus.active
-        emitter.emit('CollisionResolver:heroDied', entity)
+        emitter.emit('CR:heroDied', entity)
       }
     }
   }

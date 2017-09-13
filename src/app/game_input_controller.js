@@ -52,11 +52,11 @@ function createGameInputController(spec) {
     }
     if (e.code === KeyMapping.pause) {
       paused = !paused
-      const event = new Event('GameInputController:gamePauseToggled')
+      const event = new Event('GIC:gamePauseToggled')
       docWindow.dispatchEvent(event)
     }
     if (!isPaused()) {
-      emitter.emit('GameInputController:keydown', e)
+      emitter.emit('GIC:keydown', e)
     }
     if (e.code === KeyMapping.mute) {
       soundController.muted = !soundController.muted
@@ -75,7 +75,7 @@ function createGameInputController(spec) {
     setMousePoint(e.clientX, e.clientY)
     mouse.down = true
     if (!isPaused()) {
-      emitter.emit('GameInputController:mousedown', mouse)
+      emitter.emit('GIC:mousedown', mouse)
     }
   }
 
@@ -87,7 +87,7 @@ function createGameInputController(spec) {
   const unregisterListeners = () => {
     docWindow.removeEventListener('keyup', onKeyUp)
     docWindow.removeEventListener('keydown', onKeyDown)
-    docWindow.removeEventListener('Menu:playButtonPressed', togglePause)
+    docWindow.removeEventListener('M:playBtnPressed', togglePause)
     graphics.canvas.removeEventListener('mousemove', onMouseMove)
     graphics.canvas.removeEventListener('mousedown', onMouseDown)
     graphics.canvas.removeEventListener('mouseup', onMouseUp)
@@ -95,7 +95,7 @@ function createGameInputController(spec) {
 
   docWindow.addEventListener('keyup', onKeyUp)
   docWindow.addEventListener('keydown', onKeyDown)
-  docWindow.addEventListener('Menu:playButtonPressed', togglePause)
+  docWindow.addEventListener('M:playBtnPressed', togglePause)
   graphics.canvas.addEventListener('mousemove', onMouseMove)
   graphics.canvas.addEventListener('mousedown', onMouseDown)
   graphics.canvas.addEventListener('mouseup', onMouseUp)

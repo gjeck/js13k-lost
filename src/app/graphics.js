@@ -63,7 +63,7 @@ function createGraphics(spec) {
     e.preventDefault()
   })
 
-  emitter.on('CollisionResolver:heroTouchedEnemy', (e) => {
+  emitter.on('CR:heroTouchedEnemy', (e) => {
     if (canvas.classList.contains('animating')) {
       return
     }
