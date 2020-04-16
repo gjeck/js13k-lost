@@ -2,7 +2,7 @@
 Js13kGames is a JavaScript coding competition for HTML5 game developers. The fun part of the compo is the file size limit set to 13 kilobytes. This repo is for my 2017 entry. I'm not really an HTML5 game developer, but I had fun with this and learned a lot. Details of the game are below.
 
 ## Mazeren
-Escape three mazes to beat the game. [Play here](http://greg.jeckell.com/js13k-lost/)
+Escape three mazes to beat the game. [Play here](https://greg.jeckell.com/js13k-lost/)
 
 ### Getting started
 install dependencies
